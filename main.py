@@ -9,10 +9,14 @@ app.secret_key = 'QEWOJFE3FIOENVWIOVCEI'
 
 
 @app.route('/')
-def home():
+def index():
     session.clear()
     # Render the home page template
     return render_template('index.html')
+
+@app.route('/homepage', methods=['GET', 'POST'])
+def homepage():
+    return render_template(('homepage.html'))
 
 
 if __name__ == '__main__':

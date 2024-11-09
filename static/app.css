@@ -83,6 +83,7 @@ html {
 .left-column {
     display: flex;
     flex: 1;
+    margin-left: 3%;
     max-width: fit-content;
     align-items: center;
     flex-direction: column;
@@ -101,8 +102,8 @@ html {
 }
 
 .releases-box {
-    margin-left: 5%;
-    margin-right: 5%;
+    margin-left: 3%;
+    margin-right: 3%;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 15px;

@@ -47,6 +47,7 @@ def login():
         dbCursor = conn.cursor()
         username = request.form.get('username')
         password = request.form.get('password')
+        session['username'] = username
         if logic.login(dbCursor, username, password):
             return render_template('menu.html')
         else:

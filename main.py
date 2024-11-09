@@ -39,18 +39,6 @@ def index():
     session.clear()
     return render_template('index.html')
 
-@app.route('/homepage', methods=['GET', 'POST'])
-def homepage():
-    # conn = get_db()
-    # dbCursor = conn.cursor()
-
-    # logic.signup(conn, cursor, 'john', '1234')
-    # query = "SELECT * FROM Client"
-    # cursor.execute(query)
-    # samplePrint = cursor.fetchone()
-    # print(samplePrint)
-    
-    return render_template('homepage.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

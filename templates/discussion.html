@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/app.css"/>
+    <title>SoleTogether - Discussions</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+</head>
+<body>
+    <h1>Community Discussion</h1>
+    <div class="menu-container">
+        <div class="left-column">
+            <!-- User Stats -->
+            <div class="user-stats">
+                <h2>Welcome, {{ current_user }}</h2>
+                <p>Followers: {{ user_stats.followers }}</p>
+                <p>Following: {{ user_stats.following }}</p>
+            </div>
+            
+            <!-- Create Post Form -->
+            <div class="create-post">
+                <h3>Create New Post</h3>
+                <form id="postForm" onsubmit="createPost(event)">
+                    <textarea name="body" required placeholder="What's on your mind?"></textarea>
+                    <button type="submit" class="btn">Post</button>
+                </form>
+            </div>
+
+            <!-- Return to Menu -->
+            <form action="/menu" method="GET">
+                <button class="btn">Back to Menu</button>
+            </form>
+        </div>
+
+        <div class="column releases-box">
+            <!-- Discussion Entries -->
+            <div class="entries">
+                {% for entry in entries %}
+                <div class="releases-box-section entry" data-id="{{ entry[0] }}">
+                    <div class="entry-header">
+                        <strong>{{ entry[2] }}</strong>
+                        {% if entry[2] != current_user %}
+                        <button class="btn" onclick="followUser('{{ entry[2] }}')">Follow</button>
+                        {% endif %}
+                    </div>
+                    <p>{{ entry[1] }}</p>
+                    <div class="entry-footer">
+                        <button class="btn" onclick="toggleLike('{{entry[0]}}')">
+                            Like ({{ entry[3] }})
+                        </button>
+                        <span>{{ entry[4] }} followers</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function createPost(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData();
+            formData.append('body', form.body.value);
+
+            try {
+                await axios.post('/discussion/create', formData);
+                window.location.reload();
+            } catch (error) {
+                alert('Failed to create post');
+            }
+        }
+
+        async function toggleLike(entryId) {
+            try {
+                await axios.post(`/discussion/like/${entryId}`);
+                window.location.reload();
+            } catch (error) {
+                alert('Failed to toggle like');
+            }
+        }
+
+        async function followUser(username) {
+            try {
+                await axios.post(`/user/follow/${username}`);
+                window.location.reload();
+            } catch (error) {
+                alert('Failed to toggle follow');
+            }
+        }
+    </script>
+
+    <style>
+        .user-stats {
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        
+        .create-post {
+            margin-bottom: 20px;
+        }
+        
+        .create-post textarea {
+            width: 100%;
+            min-height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .entry {
+            margin-bottom: 15px;
+        }
+        
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .entry-footer {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</body>
+</html>

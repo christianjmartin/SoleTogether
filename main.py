@@ -29,12 +29,6 @@ def close_db(exception):
         db.close()
 
 
-
-
-
-
-
-
 @app.route('/')
 def index():
     session.clear()
@@ -117,7 +111,76 @@ def search_sneakers():
         return jsonify({"error": "An error occurred"}), 500
 
 
+@app.route('/discussion', methods=['GET'])
+def view_discussion():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    entries = logic.get_discussion_entries(dbCursor)
+    user_stats = logic.get_user_stats(dbCursor, session['username'])
+    
+    return render_template(
+        'discussion.html',
+        entries=entries,
+        current_user=session['username'],
+        user_stats=user_stats
+    )
 
+@app.route('/discussion/create', methods=['POST'])
+def create_entry():
+    if 'username' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    body = request.form.get('body')
+    if not body:
+        return jsonify({'error': 'Empty post'}), 400
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    if logic.create_discussion_entry(conn, dbCursor, session['username'], body):
+        return jsonify({'success': True})
+    else:
+        return jsonify({'error': 'Failed to create entry'}), 500
+
+@app.route('/discussion/like/<int:entry_id>', methods=['POST'])
+def like_entry(entry_id):
+    if 'username' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    # Get client ID for the current user
+    dbCursor.execute("SELECT ClientID FROM Client WHERE Username = ?", 
+                    (session['username'],))
+    result = dbCursor.fetchone()
+    if not result:
+        return jsonify({'error': 'User not found'}), 404
+    
+    client_id = result[0]
+    if logic.toggle_like(conn, dbCursor, client_id, entry_id):
+        return jsonify({'success': True})
+    else:
+        return jsonify({'error': 'Failed to toggle like'}), 500
+
+@app.route('/user/follow/<username>', methods=['POST'])
+def follow_user(username):
+    if 'username' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    if username == session['username']:
+        return jsonify({'error': 'Cannot follow yourself'}), 400
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    if logic.toggle_follow(conn, dbCursor, session['username'], username):
+        return jsonify({'success': True})
+    else:
+        return jsonify({'error': 'Failed to toggle follow'}), 500
 
 
 with app.app_context():

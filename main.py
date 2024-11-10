@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 import logic
 import sqlite3
 import os
+import requests
 
 app = Flask(__name__)
 app.secret_key = 'QEWOJFE3FIOENVWIOVCEI'
@@ -70,6 +71,54 @@ def signup():
     else:
         return render_template('signup.html')
     
+
+
+
+def fetch_sneaker_brands():
+    url = "https://v1-sneakers.p.rapidapi.com/v1/brands"
+    headers = {
+        "x-rapidapi-host": "v1-sneakers.p.rapidapi.com",
+        "x-rapidapi-key": "8b1bac8483msh1e8e12c443cd7cbp1192cejsn4ab3a1e0147d"
+    }
+    
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        brands = response.json()
+        print("Sneaker Brands:", brands)
+        return brands
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")
+    except Exception as err:
+        print(f"An error occurred: {err}")
+
+
+
+@app.route('/search', methods=['POST'])
+def search_sneakers():
+    keyword = request.form.get('keyword')
+    url = f"https://{API_HOST}/v1/sneakers"
+    headers = {
+        "x-rapidapi-host": API_HOST,
+        "x-rapidapi-key": API_KEY
+    }
+    params = {"limit": 10, "name": keyword}
+
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        sneakers = response.json().get('results', [])
+        return jsonify(sneakers)
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")
+        return jsonify({"error": "HTTP error occurred"}), 500
+    except Exception as err:
+        print(f"An error occurred: {err}")
+        return jsonify({"error": "An error occurred"}), 500
+
+
+
+
 
 with app.app_context():
     init_db()

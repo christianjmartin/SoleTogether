@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sneaker Search</title>
+    <script>
+        async function searchSneakers() {
+            const keyword = document.getElementById("keyword").value;
+            const response = await fetch("/search", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `keyword=${keyword}`
+            });
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = "";
+
+            if (response.ok) {
+                const sneakers = await response.json();
+                sneakers.forEach(sneaker => {
+                    const item = document.createElement("div");
+                    item.classList.add("sneaker-item");
+                    item.innerHTML = `<h3>${sneaker.name}</h3><p>Brand: ${sneaker.brand}</p>`;
+                    resultsContainer.appendChild(item);
+                });
+            } else {
+                resultsContainer.innerHTML = "<p>Failed to fetch sneakers. Please try again.</p>";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Search for Sneakers</h1>
+    <form onsubmit="event.preventDefault(); searchSneakers();">
+        <input type="text" id="keyword" name="keyword" placeholder="Enter sneaker name or keyword" required>
+        <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+</body>
+</html>

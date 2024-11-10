@@ -66,7 +66,9 @@ def signup():
         return render_template('signup.html')
     
 
-
+@app.route('/menu')
+def menu():
+    return render_template('menu.html')
 
 def fetch_sneaker_brands():
     url = "https://v1-sneakers.p.rapidapi.com/v1/brands"

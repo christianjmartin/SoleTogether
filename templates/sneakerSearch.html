@@ -25,18 +25,12 @@
                     const item = document.createElement("div");
                     item.classList.add("sneaker-item");
                     item.innerHTML = `
-                    <div class='search-results'>
-                        <form action="/sneakerpage" method="POST">
-                            <button type="submit" style="all: unset; cursor: pointer; width: 100%;">
+                        <div class='search-results'>
+                            <a href="/sneakerpage?shoe_id=${encodeURIComponent(sneaker.shoe_id)}" style="text-decoration: none; color: inherit; width: 100%; display: block;">
                                 <h3>${sneaker.name}</h3>
                                 <p>Brand: ${sneaker.brand}</p>
-                                <input type="hidden" name="name" value="${sneaker.name}">
-                                <input type="hidden" name="brand" value="${sneaker.brand}">
-                                <input type="hidden" name="price" value="${sneaker.price}">
-                                <input type="hidden" name="imgURL" value="${sneaker.imgURL}">
-                            </button>
-                        </form>
-                    </div>
+                            </a>
+                        </div>
                     `;
                     resultsContainer.appendChild(item);
                 });

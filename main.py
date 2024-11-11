@@ -58,6 +58,7 @@ def signup():
         dbCursor = conn.cursor()
         username = request.form.get('username')
         password = request.form.get('password')
+        session['username'] = username
         if logic.signup(conn, dbCursor, username, password):
             return render_template('menu.html')
         else:
@@ -99,27 +100,113 @@ def fetch_sneaker_brands():
 def search_page():
     return render_template('sneakerSearch.html')
 
-# Route to handle the AJAX request for live search
+
 @app.route('/sneaker_search_results', methods=['GET'])
 def search_sneakers():
     keyword = request.args.get('keyword', '')
     conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Shoe WHERE Name LIKE ?", ('%' + keyword + '%',))
-    shoes = cursor.fetchall()
+    dbCursor = conn.cursor()
+    dbCursor.execute("SELECT * FROM Shoe WHERE Name LIKE ?", ('%' + keyword + '%',))
+    shoes = dbCursor.fetchall()
     conn.close()
 
-    results = [{"brand": shoe[1], "name": shoe[2], "price": shoe[3], "imgURL": shoe[4]} for shoe in shoes]
+    results = [{"shoe_id": shoe[0], "brand": shoe[1], "name": shoe[2], "price": shoe[3], "imgURL": shoe[4]} for shoe in shoes]
+    # print(results)
     return jsonify(results)
 
-@app.route('/sneakerpage', methods=['POST'])
+@app.route('/sneakerpage', methods=['GET', 'POST'])
 def sneaker_page():
-    name = request.form.get('name')
-    brand = request.form.get('brand')
-    price = request.form.get('price')
-    img_url = request.form.get('imgURL')
+    shoe_id = request.args.get('shoe_id') if request.method == 'GET' else request.form.get('shoe_id')
+
+    if not shoe_id:
+        return "Error: Missing shoe_id", 400
+
+    print(shoe_id)
+    conn = get_db()
+    dbCursor = conn.cursor()
+
+    dbCursor.execute("SELECT Brand, Name, AveragePrice, imgURL FROM Shoe WHERE ShoeID = ?", (shoe_id,))
+    shoe = dbCursor.fetchone()
+
+    if shoe is None:
+        return "Sneaker not found", 404
+
+    brand, name, price, img_url = shoe
+    discussions = logic.getSneakerDiscussions(dbCursor, name, brand, price)
+    # print(discussions)
+
+    conn.close()
+    return render_template(
+        'sneakerpage.html', 
+        shoe_id=shoe_id, 
+        name=name, 
+        brand=brand, 
+        price=price, 
+        img_url=img_url, 
+        discussions=discussions
+    )
+
+@app.route('/add-discussion', methods=['POST'])
+def add_discussion():
+    shoe_id = request.args.get('shoe_id') 
+    discussion_body = request.form.get('discussion_body')
+    username = session.get('username')
+
+    if not shoe_id:
+        return "Error: Missing shoe_id", 400
+
+    conn = get_db()
+    dbCursor = conn.cursor()
+    query = "INSERT INTO SneakerDiscussionEntry (ShoeID, Body, Username) VALUES (?, ?, ?)"
+    try:
+        dbCursor.execute(query, (shoe_id, discussion_body, username))
+        conn.commit()
+    except Exception as e:
+        print(f"Error inserting discussion: {e}")
+    finally:
+        conn.close()
+
+    return redirect(url_for('sneaker_page', shoe_id=shoe_id))
+
+
+
+@app.route('/add_like_sneaker_page', methods=['POST'])
+def add_like_sneaker_page():
+    shoe_id = request.form.get('shoe_id')
+    discussion_id = request.form.get('discussion_id')
+    username = session.get('username') 
+
+    get_likes_query = "SELECT Likes, LikedByClientUsernames FROM SneakerDiscussionEntry WHERE SneakerDiscussionEntryID = ? AND ShoeID = ?"
+    update_likes_query = "UPDATE SneakerDiscussionEntry SET Likes = ?, LikedByClientUsernames = ? WHERE SneakerDiscussionEntryID = ? AND ShoeID = ?"
     
-    return render_template('sneakerpage.html', name=name, brand=brand, price=price, img_url=img_url)
+    conn = get_db()
+    dbCursor = conn.cursor()
+
+    try:
+        dbCursor.execute(get_likes_query, (discussion_id, shoe_id))
+        result = dbCursor.fetchone()
+        
+        if result:
+            current_likes = result[0]
+            liked_by_clients = result[1].split(',') if result[1] else []
+
+            if str(username) in liked_by_clients:
+                liked_by_clients.remove(str(username))
+                current_likes -= 1
+            else:
+                liked_by_clients.append(str(username))
+                current_likes += 1
+
+            updated_liked_by_clients = ','.join(liked_by_clients)
+            dbCursor.execute(update_likes_query, (current_likes, updated_liked_by_clients, discussion_id, shoe_id))
+            conn.commit()
+
+    except Exception as e:
+        print(e)
+    finally:
+        conn.close()
+
+    return redirect(url_for('sneaker_page', shoe_id=shoe_id))
 
 
 

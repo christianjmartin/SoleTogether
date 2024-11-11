@@ -1,3 +1,5 @@
+from datetime import datetime 
+
 def signup(conn, dbCursor, username, password):
     checkExists = "SELECT * FROM Client WHERE Username = ?"
     dbCursor.execute(checkExists, (username,))
@@ -136,3 +138,43 @@ def get_user_stats(dbCursor, username):
     except Exception as e:
         print(f"Error getting user stats: {e}")
         return {'followers': 0, 'following': 0}
+    
+
+def getSneakerDiscussions(dbCursor, name, brand, price):
+    getShoe = "SELECT ShoeID FROM Shoe WHERE Name = ? AND Brand = ? AND AveragePrice = ?"
+
+    try:
+        dbCursor.execute(getShoe, (name, brand, price))
+        shoe_row = dbCursor.fetchone()
+        if shoe_row is None:
+            print("No matching ShoeID found.")
+            return [] 
+        shoeID = shoe_row[0]
+    except Exception as e:
+        print(f"Error fetching ShoeID: {e}")
+        return []
+    
+    query = "SELECT SneakerDiscussionEntryID, Username, Body, EntryDate, Likes FROM SneakerDiscussionEntry WHERE ShoeID = ? ORDER BY EntryDate DESC"
+    try:
+        dbCursor.execute(query, (shoeID,))
+        results = dbCursor.fetchall()
+        
+        discussions = []
+        for row in results:
+            entry_date = row[3]
+            if isinstance(entry_date, str):
+                entry_date = datetime.strptime(entry_date, "%Y-%m-%d %H:%M:%S").date()
+            elif isinstance(entry_date, datetime):
+                entry_date = entry_date.date()
+            discussions.append({
+                'discussion_id': row[0],
+                'Username': row[1],
+                'Body': row[2],
+                'EntryDate': entry_date,
+                'Likes': row[4]
+            })
+        return discussions
+
+    except Exception as e:
+        print(f"Error fetching discussions: {e}")
+        return []

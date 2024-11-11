@@ -28,6 +28,38 @@
                 </div>
             </div>
         </div>
+        <div class = "sneaker-discussions">
+            <div class="form-group-sneaker-discussions">
+                <form action="{{ url_for('add_discussion', shoe_id=shoe_id) }}" method="POST">
+                    <input type="hidden" name="shoe_id" value="{{ shoe_id }}">
+                    <input type="text" id="discussion-body" name="discussion_body" placeholder="Start a discussion..." required>
+                    <button class="btn" type="submit">Submit</button>
+                </form>
+            </div>
+            <div class="discussion-list">
+                {% if discussions %}
+                    {% for discussion in discussions %}
+                        <div class="discussion-item">
+                            <div class = "flex-column">
+                                <p><strong>{{ discussion.Username }}:</strong> {{ discussion.Body }}</p>
+                                <p class="timestamp">{{ discussion.EntryDate }}</p>
+                            </div>
+                            <div class = likes>
+                                <form action="{{ url_for('add_like_sneaker_page', shoe_id=shoe_id) }}" method="POST">
+                                    <input type="hidden" name="discussion_id" value="{{ discussion.discussion_id }}">
+                                    <input type="hidden" name="shoe_id" value="{{ shoe_id }}">
+                                    <button class="like-btn" type="submit">Like</button>
+                                </form>
+                                <small>Likes: {{ discussion.Likes }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No discussions yet. Be the first to start one!</p>
+                {% endif %}
+            </div>
+            
+        </div>
     </div>
 </body>
 </html>

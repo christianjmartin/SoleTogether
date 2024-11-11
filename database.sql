@@ -36,6 +36,18 @@ CREATE TABLE IF NOT EXISTS DiscussionEntry (
     FOREIGN KEY (Username) REFERENCES Client(Username)
 );
 
+CREATE TABLE IF NOT EXISTS SneakerDiscussionEntry (
+    SneakerDiscussionEntryID INTEGER PRIMARY KEY AUTOINCREMENT,
+    ShoeID INT NOT NULL,
+    Body TEXT,
+    Username TEXT NOT NULL,
+    Likes INT DEFAULT 0,
+    EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    LikedByClientUsernames TEXT DEFAULT '',
+    FOREIGN KEY (ShoeID) REFERENCES Shoe(ShoeID),
+    FOREIGN KEY (Username) REFERENCES Client(Username)
+);
+
 CREATE TABLE IF NOT EXISTS Likes (
     LikesID INTEGER PRIMARY KEY AUTOINCREMENT,
     ClientID INT REFERENCES Client(ClientID),

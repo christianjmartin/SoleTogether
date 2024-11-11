@@ -32,8 +32,8 @@
             <div class="form-group-sneaker-discussions">
                 <form action="{{ url_for('add_discussion', shoe_id=shoe_id) }}" method="POST">
                     <input type="hidden" name="shoe_id" value="{{ shoe_id }}">
-                    <input type="text" id="discussion-body" name="discussion_body" placeholder="Start a discussion..." required>
-                    <button class="btn" type="submit">Submit</button>
+                    <textarea name="discussion_body" id="discussion_body" cols="170" rows="3" placeholder="Start a discussion..." required></textarea>
+                    <button class="btn2" type="submit">Submit</button>
                 </form>
             </div>
             <div class="discussion-list">
@@ -58,7 +58,11 @@
                     <p>No discussions yet. Be the first to start one!</p>
                 {% endif %}
             </div>
-            
+        </div>
+        <div class = "menu-button-container">
+            <form action="/menu" method="GET">
+                <button class="btn">Back to Menu</button>
+            </form>
         </div>
     </div>
 </body>

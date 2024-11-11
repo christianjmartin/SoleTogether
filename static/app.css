@@ -37,6 +37,16 @@ html {
     margin-top: 20px;
 }
 
+.btn2 {
+    padding: 7px 15px;
+    font-size: 1rem;
+    background-color: rgb(132, 182, 211);
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 1.5px solid rgb(103, 126, 158);
+}
+
 .like-btn {
     padding: 5px 10px;
     font-size: 0.9rem;
@@ -288,6 +298,8 @@ html {
     gap: 20px;
 }
 
+
+
 .sneaker-discussions {
     margin-top: 10px;
     display: flex;
@@ -311,6 +323,15 @@ html {
     width: 100%;
     padding: 3.5px;
 }
+
+.form-group-sneaker-discussions textarea {
+    width: 100%;
+    font-size: 1rem;
+    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid #b6c0c4;
+}
+
 
 .discussion-list {
     display: flex;
@@ -350,5 +371,9 @@ html {
 .flex-column {
     display: flex;
     flex-direction: column;
+}
+
+.menu-button-container {
+    align-items: flex-start;
 }
 

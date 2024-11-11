@@ -41,6 +41,26 @@ html {
     background-color: rgb(105, 145, 204);
 }
 
+
+
+/* MAIN MENU STLYING  */
+.top-of-menu {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* manually center the top of the menu, becuase the "Sole Together" skews it a bit, prob a better way to do this  */
+.top-of-menu p {
+    transform: translateX(-57px);
+}
+
+.profile-icon {
+    border-radius: 10px;
+    height: 40px;
+    width: 40px;
+}
+
 .form-container {
     display: flex;
     flex-direction: column;
@@ -132,10 +152,121 @@ html {
     color: black;
 }
 
-.releases-box-section p, b {
+.releases-box-section img {
+    width: 100%;
+    height: auto;
+    max-height: 150px;
+    max-width: 300px;
+    object-fit: cover;
+    border-radius: 8px; 
+    margin-left: 2vw;
+}
+
+.releases-box-section p{
     margin-right: 5px;
+}
+
+.releases-box-section b {
+    margin-right: 5px;
+    font-size: 1.5rem;
 }
 
 .spacing-10px {
     margin-top: 10px;
 }
+
+
+
+
+
+
+/* SEARCH STYLING  */
+
+.search-results {
+    padding: 10px;
+    background-color: #ffffff;
+    box-shadow: 0px 8px 16px 0px rgba(94, 94, 94, 0.2);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    margin: 0 auto;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+.search-results:hover {
+    cursor: pointer;
+    background-color: #e9e9e9;
+}
+
+
+
+
+
+
+
+/* SNEAKER PAGE STLYING  */
+
+.sneaker-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sneaker-details {
+    text-wrap: wrap;
+}
+
+.sneaker-info-and-links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 85vw;
+    background-color: #e6edf0;
+    color: black;
+    border-radius: 10px;
+    box-shadow: 0px 8px 16px rgba(94, 94, 94, 0.2);
+    padding: 20px;
+    gap: 20px;
+}
+
+.sneaker-image-circle {
+    width: 300px;
+    height: 270px;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sneaker-image-circle img {
+    width: 250px;
+    height: auto;
+    object-fit: cover;
+}
+
+.third-party-app-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.goat-image {
+    border-radius: 50%;
+    height: 55px;
+    width: 55px;
+    gap: 20px;
+}
+
+.stockx-image {
+    margin-left: 40px;
+    height: 55px;
+    width: auto;
+    object-fit: cover;
+    gap: 20px;
+}
+

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/app.css"/>
+    <title>Sneaker Search</title>
+    <script>
+        let debounceTimeout;
+
+        async function searchSneakers() {
+            const keyword = document.getElementById("keyword").value;
+            if (!keyword) {
+                document.getElementById("results").innerHTML = "";
+                return;
+            }
+
+            const response = await fetch(`/sneaker_search_results?keyword=${encodeURIComponent(keyword)}`);
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = "";
+
+            if (response.ok) {
+                const sneakers = await response.json();
+                sneakers.forEach(sneaker => {
+                    const item = document.createElement("div");
+                    item.classList.add("sneaker-item");
+                    item.innerHTML = `
+                    <div class='search-results'>
+                        <form action="/sneakerpage" method="POST">
+                            <button type="submit" style="all: unset; cursor: pointer; width: 100%;">
+                                <h3>${sneaker.name}</h3>
+                                <p>Brand: ${sneaker.brand}</p>
+                                <input type="hidden" name="name" value="${sneaker.name}">
+                                <input type="hidden" name="brand" value="${sneaker.brand}">
+                                <input type="hidden" name="price" value="${sneaker.price}">
+                                <input type="hidden" name="imgURL" value="${sneaker.imgURL}">
+                            </button>
+                        </form>
+                    </div>
+                    `;
+                    resultsContainer.appendChild(item);
+                });
+            } else {
+                resultsContainer.innerHTML = "<p>Failed to fetch sneakers. Please try again.</p>";
+            }
+        }
+
+        function handleInput() {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(searchSneakers, 100);
+        }
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Search for Sneakers</h1>
+        <input type="text" id="keyword" name="keyword" placeholder="Enter sneaker name or keyword" oninput="handleInput()" required>
+    </div>
+    <div id="results"></div>
+</body>
+</html>

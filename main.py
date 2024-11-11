@@ -90,27 +90,45 @@ def fetch_sneaker_brands():
 
 
 
-@app.route('/search', methods=['POST'])
-def search_sneakers():
-    keyword = request.form.get('keyword')
-    url = f"https://{API_HOST}/v1/sneakers"
-    headers = {
-        "x-rapidapi-host": API_HOST,
-        "x-rapidapi-key": API_KEY
-    }
-    params = {"limit": 10, "name": keyword}
 
-    try:
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()
-        sneakers = response.json().get('results', [])
-        return jsonify(sneakers)
-    except requests.exceptions.HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-        return jsonify({"error": "HTTP error occurred"}), 500
-    except Exception as err:
-        print(f"An error occurred: {err}")
-        return jsonify({"error": "An error occurred"}), 500
+
+
+
+
+@app.route('/sneakerSearch', methods=['POST'])
+def search_page():
+    return render_template('sneakerSearch.html')
+
+# Route to handle the AJAX request for live search
+@app.route('/sneaker_search_results', methods=['GET'])
+def search_sneakers():
+    keyword = request.args.get('keyword', '')
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Shoe WHERE Name LIKE ?", ('%' + keyword + '%',))
+    shoes = cursor.fetchall()
+    conn.close()
+
+    results = [{"brand": shoe[1], "name": shoe[2], "price": shoe[3], "imgURL": shoe[4]} for shoe in shoes]
+    return jsonify(results)
+
+@app.route('/sneakerpage', methods=['POST'])
+def sneaker_page():
+    name = request.form.get('name')
+    brand = request.form.get('brand')
+    price = request.form.get('price')
+    img_url = request.form.get('imgURL')
+    
+    return render_template('sneakerpage.html', name=name, brand=brand, price=price, img_url=img_url)
+
+
+
+
+
+
+
+
+
 
 
 @app.route('/discussion', methods=['GET'])

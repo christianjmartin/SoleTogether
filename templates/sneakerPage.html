@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/app.css"/>
+    <title>Sneaker Page</title>
+</head>
+<body>
+    <div class = sneaker-page-container>
+        <div class="sneaker-info-and-links">
+            <div class="sneaker-image-circle">
+                <img src="{{ img_url }}" alt="{{ name }}">
+            </div>
+            <div class="sneaker-details">
+                <h1>{{ name }}</h1>
+                <p>Brand: {{ brand }}</p>
+                <p>Price: ${{ price }}</p>
+                <div class = "third-party-app-links">
+                    <form action="/add-wishlist" method="POST">
+                        <button class = "btn">Add to Collection</button>
+                    </form>
+                    <form action="/add-collection" method="POST">
+                        <button class = "btn">Add to Wishlist</button>
+                    </form>
+                    <img class = "stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="stockx link">
+                    <img class = "goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="goat link">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

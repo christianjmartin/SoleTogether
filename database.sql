@@ -6,8 +6,9 @@ CREATE TABLE IF NOT EXISTS Client (
 
 CREATE TABLE IF NOT EXISTS Shoe (
     ShoeID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Brand TEXT,
     Name TEXT,
-    AveragePrice TEXT,
+    AveragePrice INT,
     imgURL TEXT
 );
 

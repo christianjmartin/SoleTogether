@@ -9,7 +9,7 @@
 </head>
 <body>
     <h1>Community Discussion</h1>
-    <div class="menu-container">
+    <div class="discussion-container">
         <div class="left-column">
             <!-- User Stats -->
             <div class="user-stats">
@@ -28,16 +28,18 @@
             </div>
 
             <!-- Return to Menu -->
-            <form action="/menu" method="GET">
-                <button class="btn">Back to Menu</button>
-            </form>
+            <div class = "menu-button-container">
+                <form action="/menu" method="GET">
+                    <button class="btn">Back to Menu</button>
+                </form>
+            </div>
         </div>
 
-        <div class="column releases-box">
+        <div class="column general-discussion-box">
             <!-- Discussion Entries -->
             <div class="entries">
                 {% for entry in entries %}
-                <div class="releases-box-section entry" data-id="{{ entry[0] }}">
+                <div class="general-discussion-entry entry" data-id="{{ entry[0] }}">
                     <div class="entry-header">
                         <strong>{{ entry[2] }}</strong>
                         {% if entry[2] != current_user %}

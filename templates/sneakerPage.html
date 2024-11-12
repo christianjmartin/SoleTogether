@@ -23,8 +23,66 @@
                     <form action="/add-collection" method="POST">
                         <button class = "btn">Add to Wishlist</button>
                     </form>
-                    <img class = "stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="stockx link">
-                    <img class = "goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="goat link">
+                    {% if name == "Adidas Yeezy Boost 350 Turtle Dove" %}
+                        <a href="https://stockx.com/adidas-yeezy-boost-350-turtle-dove-2022" target="_blank">
+                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+                        </a>
+                        <a href="https://www.goat.com/sneakers/yeezy-boost-350-turtle-dove-2022-aq4832-2022" target="_blank">
+                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
+                        </a>
+                    {% elif name == "Adidas Samba Messi" %}
+                        <a href="https://stockx.com/adidas-samba-inter-miami-cf-messi-pink" target="_blank">
+                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+                        </a>
+                        <a href="https://www.goat.com/sneakers/lionel-messi-x-samba-inter-miami-cf-home-kit-ih8158?utm_source=google_ads&utm_medium=cpc&utm_campaign=21013309811&utm_content=&gad_source=1&gbraid=0AAAAADQ3c8gGXfdeJWh3j_e9AK9y_O-Bb&gclid=Cj0KCQiAlsy5BhDeARIsABRc6ZvAQ1vSg6r30D0mDbVn6sJM3ceekTHs3js2QH09vCtdCGX_D0zKzEcaAtAfEALw_wcB" target="_blank">
+                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
+                        </a>
+                    {% elif name == "Nike Foamposite Lite Kryptonate" %}
+                        <a href="https://stockx.com/nike-air-foamposite-lite-asg-kryptonate" target="_blank">
+                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+                        </a>
+                        <a href="https://www.goat.com/sneakers/foamposite-lite-asg-kryptonate-361162-331" target="_blank">
+                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
+                        </a>
+                    {% elif name == "Nike Dunk Low SB Paris" %}
+                        <a href="https://stockx.com/nike-dunk-sb-low-paris?" target="_blank">
+                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+                        </a>
+                        <a href="https://www.goat.com/sneakers/dunk-low-pro-sb-paris-308270-111" target="_blank">
+                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
+                        </a>
+                    {% elif name == "Nike Dunk Low SB What The" %}
+                        <a href="https://stockx.com/nike-dunk-sb-low-what-the-dunk" target="_blank">
+                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+                        </a>
+                        <a href="https://www.goat.com/sneakers/sb-what-the-dunk-what-the-dunk-318403-141?" target="_blank">
+                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
+                        </a>
+                    {% elif name == "Nike Air Jordan 4 Eminem" %}
+                        <a href="https://stockx.com/jordan-4-retro-eminem-encore" target="_blank">
+                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+                        </a>
+                        <a href="https://www.goat.com/sneakers/air-jordan-4-retro-eminem-jbm231m19c1" target="_blank">
+                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
+                        </a>
+                    {% elif name == "Nike Calm Mule" %}
+                        <a href="https://stockx.com/nike-calm-mule-hemp" target="_blank">
+                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+                        </a>
+                        <a href="https://www.goat.com/sneakers/calm-mule-hemp-fd5130-200" target="_blank">
+                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
+                        </a>
+                    {% elif name == "Nike Dunk Retro High SE" %}
+                        <a href="https://stockx.com/nike-dunk-high-se-hemp-hoops" target="_blank">
+                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+                        </a>
+                        <a href="https://www.goat.com/sneakers/dunk-high-retro-se-hemp-hoops-fj4191-200" target="_blank">
+                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
+                        </a>
+                    {% else %}
+                        <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+                        <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
+                    {% endif %}
                 </div>
             </div>
         </div>

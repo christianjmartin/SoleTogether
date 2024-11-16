@@ -28,12 +28,10 @@ def close_db(exception):
     if db is not None:
         db.close()
 
-
 @app.route('/')
 def index():
     session.clear()
     return render_template('index.html')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -49,9 +47,8 @@ def login():
             return jsonify(message='This client doesnt exist')
     else:
         return render_template('login.html')
-    
 
-@app.route ('/signup', methods=['GET', 'POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         conn = get_db()
@@ -65,41 +62,14 @@ def signup():
             return jsonify(message='You already have an account, or an internal error occured')
     else:
         return render_template('signup.html')
-    
 
 @app.route('/menu')
 def menu():
     return render_template('menu.html')
 
-def fetch_sneaker_brands():
-    url = "https://v1-sneakers.p.rapidapi.com/v1/brands"
-    headers = {
-        "x-rapidapi-host": "v1-sneakers.p.rapidapi.com",
-        "x-rapidapi-key": "8b1bac8483msh1e8e12c443cd7cbp1192cejsn4ab3a1e0147d"
-    }
-    
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raises an HTTPError for bad responses
-        brands = response.json()
-        print("Sneaker Brands:", brands)
-        return brands
-    except requests.exceptions.HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-    except Exception as err:
-        print(f"An error occurred: {err}")
-
-
-
-
-
-
-
-
 @app.route('/sneakerSearch', methods=['POST'])
 def search_page():
     return render_template('sneakerSearch.html')
-
 
 @app.route('/sneaker_search_results', methods=['GET'])
 def search_sneakers():
@@ -109,46 +79,40 @@ def search_sneakers():
     dbCursor.execute("SELECT * FROM Shoe WHERE Name LIKE ?", ('%' + keyword + '%',))
     shoes = dbCursor.fetchall()
     conn.close()
-
     results = [{"shoe_id": shoe[0], "brand": shoe[1], "name": shoe[2], "price": shoe[3], "imgURL": shoe[4]} for shoe in shoes]
-    # print(results)
     return jsonify(results)
 
 @app.route('/sneakerpage', methods=['GET', 'POST'])
 def sneaker_page():
     shoe_id = request.args.get('shoe_id') if request.method == 'GET' else request.form.get('shoe_id')
-
     if not shoe_id:
         return "Error: Missing shoe_id", 400
 
-    print(shoe_id)
     conn = get_db()
     dbCursor = conn.cursor()
-
     dbCursor.execute("SELECT Brand, Name, AveragePrice, imgURL FROM Shoe WHERE ShoeID = ?", (shoe_id,))
     shoe = dbCursor.fetchone()
-
+    
     if shoe is None:
         return "Sneaker not found", 404
 
     brand, name, price, img_url = shoe
     discussions = logic.getSneakerDiscussions(dbCursor, name, brand, price)
-    # print(discussions)
-
     conn.close()
+    
     return render_template(
-        'sneakerpage.html', 
-        shoe_id=shoe_id, 
-        name=name, 
-        brand=brand, 
-        price=price, 
-        img_url=img_url, 
+        'sneakerpage.html',
+        shoe_id=shoe_id,
+        name=name,
+        brand=brand,
+        price=price,
+        img_url=img_url,
         discussions=discussions
     )
 
 @app.route('/add-discussion', methods=['POST'])
 def add_discussion():
-    shoe_id = request.args.get('shoe_id') 
+    shoe_id = request.args.get('shoe_id')
     discussion_body = request.form.get('discussion_body')
     username = session.get('username')
 
@@ -168,13 +132,11 @@ def add_discussion():
 
     return redirect(url_for('sneaker_page', shoe_id=shoe_id))
 
-
-
 @app.route('/add_like_sneaker_page', methods=['POST'])
 def add_like_sneaker_page():
     shoe_id = request.form.get('shoe_id')
     discussion_id = request.form.get('discussion_id')
-    username = session.get('username') 
+    username = session.get('username')
 
     get_likes_query = "SELECT Likes, LikedByClientUsernames FROM SneakerDiscussionEntry WHERE SneakerDiscussionEntryID = ? AND ShoeID = ?"
     update_likes_query = "UPDATE SneakerDiscussionEntry SET Likes = ?, LikedByClientUsernames = ? WHERE SneakerDiscussionEntryID = ? AND ShoeID = ?"
@@ -207,16 +169,6 @@ def add_like_sneaker_page():
         conn.close()
 
     return redirect(url_for('sneaker_page', shoe_id=shoe_id))
-
-
-
-
-
-
-
-
-
-
 
 @app.route('/discussion', methods=['GET'])
 def view_discussion():
@@ -260,7 +212,6 @@ def like_entry(entry_id):
     conn = get_db()
     dbCursor = conn.cursor()
     
-    # Get client ID for the current user
     dbCursor.execute("SELECT ClientID FROM Client WHERE Username = ?", 
                     (session['username'],))
     result = dbCursor.fetchone()
@@ -289,6 +240,130 @@ def follow_user(username):
     else:
         return jsonify({'error': 'Failed to toggle follow'}), 500
 
+@app.route('/add-to-collection', methods=['POST'])
+def add_to_collection():
+    if 'username' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    shoe_id = request.form.get('shoe_id')
+    if not shoe_id:
+        return jsonify({'error': 'No shoe specified'}), 400
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    if logic.add_to_collection(conn, dbCursor, session['username'], shoe_id):
+        return redirect(url_for('sneaker_page', shoe_id=shoe_id))
+    else:
+        return jsonify({'error': 'Failed to add to collection'}), 500
+
+@app.route('/move-to-collection', methods=['POST'])
+def move_to_collection():
+    if 'username' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    shoe_id = request.form.get('shoe_id')
+    if not shoe_id:
+        return jsonify({'error': 'No shoe specified'}), 400
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    if logic.move_to_collection(conn, dbCursor, session['username'], shoe_id):
+        return redirect(url_for('view_wishlist'))
+    else:
+        return jsonify({'error': 'Failed to move to collection'}), 500
+
+@app.route('/collection')
+def view_collection():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    collection_items = logic.get_collection(dbCursor, session['username'])
+    
+    return render_template('collection.html', items=collection_items)
+
+@app.route('/wishlist')
+def view_wishlist():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    wishlist_items = logic.get_wishlist(dbCursor, session['username'])
+    
+    return render_template('wishlist.html', items=wishlist_items)
+
+@app.route('/add-to-wishlist', methods=['POST'])
+def add_to_wishlist():
+    if 'username' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    shoe_id = request.form.get('shoe_id')
+    if not shoe_id:
+        return jsonify({'error': 'No shoe specified'}), 400
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    if logic.add_to_wishlist(conn, dbCursor, session['username'], shoe_id):
+        return redirect(url_for('sneaker_page', shoe_id=shoe_id))
+    else:
+        return jsonify({'error': 'Failed to add to wishlist'}), 500
+
+@app.route('/remove-from-wishlist', methods=['POST'])
+def remove_from_wishlist():
+    if 'username' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    shoe_id = request.form.get('shoe_id')
+    if not shoe_id:
+        return jsonify({'error': 'No shoe specified'}), 400
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    if logic.remove_from_wishlist(conn, dbCursor, session['username'], shoe_id):
+        return redirect(url_for('view_wishlist'))
+    else:
+        return jsonify({'error': 'Failed to remove from wishlist'}), 500
+
+def fetch_sneaker_brands():
+    url = "https://v1-sneakers.p.rapidapi.com/v1/brands"
+    headers = {
+        "x-rapidapi-host": "v1-sneakers.p.rapidapi.com",
+        "x-rapidapi-key": "8b1bac8483msh1e8e12c443cd7cbp1192cejsn4ab3a1e0147d"
+    }
+    
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        brands = response.json()
+        print("Sneaker Brands:", brands)
+        return brands
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")
+    except Exception as err:
+        print(f"An error occurred: {err}")
+
+@app.route('/remove-from-collection', methods=['POST'])
+def remove_from_collection():
+    if 'username' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    shoe_id = request.form.get('shoe_id')
+    if not shoe_id:
+        return jsonify({'error': 'No shoe specified'}), 400
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    if logic.remove_from_collection(conn, dbCursor, session['username'], shoe_id):
+        return redirect(url_for('view_collection'))
+    else:
+        return jsonify({'error': 'Failed to remove from collection'}), 500
 
 with app.app_context():
     init_db()

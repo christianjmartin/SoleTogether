@@ -178,3 +178,95 @@ def getSneakerDiscussions(dbCursor, name, brand, price):
     except Exception as e:
         print(f"Error fetching discussions: {e}")
         return []
+   
+
+def add_to_collection(conn, dbCursor, username, shoe_id):
+    try:
+        query = "INSERT INTO Collection (ClientUsername, ShoeID) VALUES (?, ?)"
+        dbCursor.execute(query, (username, shoe_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error adding to collection: {e}")
+        return False
+
+def get_collection(dbCursor, username):
+    query = """
+        SELECT DISTINCT s.ShoeID, s.Brand, s.Name, s.AveragePrice, s.imgURL 
+        FROM Collection c
+        JOIN Shoe s ON c.ShoeID = s.ShoeID
+        WHERE c.ClientUsername = ?
+    """
+    try:
+        dbCursor.execute(query, (username,))
+        return dbCursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching collection: {e}")
+        return []
+
+def move_to_collection(conn, dbCursor, username, shoe_id):
+    try:
+        # Remove from wishlist
+        remove_query = "DELETE FROM Wishlist WHERE ClientUsername = ? AND ShoeID = ?"
+        dbCursor.execute(remove_query, (username, shoe_id))
+        
+        # Add to collection
+        add_query = "INSERT INTO Collection (ClientUsername, ShoeID) VALUES (?, ?)"
+        dbCursor.execute(add_query, (username, shoe_id))
+        
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error moving to collection: {e}")
+        return False
+
+def add_to_wishlist(conn, dbCursor, username, shoe_id):
+    try:
+        # Check if shoe already exists in wishlist
+        check_query = "SELECT * FROM Wishlist WHERE ClientUsername = ? AND ShoeID = ?"
+        dbCursor.execute(check_query, (username, shoe_id))
+        if dbCursor.fetchone():
+            return True  # Item already in wishlist
+            
+        query = "INSERT INTO Wishlist (ClientUsername, ShoeID) VALUES (?, ?)"
+        dbCursor.execute(query, (username, shoe_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error adding to wishlist: {e}")
+        return False
+    
+
+def get_wishlist(dbCursor, username):
+    query = """
+        SELECT s.ShoeID, s.Brand, s.Name, s.AveragePrice, s.imgURL 
+        FROM Wishlist w
+        JOIN Shoe s ON w.ShoeID = s.ShoeID
+        WHERE w.ClientUsername = ?
+    """
+    try:
+        dbCursor.execute(query, (username,))
+        return dbCursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching wishlist: {e}")
+        return []
+
+def remove_from_wishlist(conn, dbCursor, username, shoe_id):
+    try:
+        query = "DELETE FROM Wishlist WHERE ClientUsername = ? AND ShoeID = ?"
+        dbCursor.execute(query, (username, shoe_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error removing from wishlist: {e}")
+        return False
+    
+def remove_from_collection(conn, dbCursor, username, shoe_id):
+    try:
+        query = "DELETE FROM Collection WHERE ClientUsername = ? AND ShoeID = ?"
+        dbCursor.execute(query, (username, shoe_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error removing from collection: {e}")
+        return False

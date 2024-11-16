@@ -22,18 +22,21 @@
             if (response.ok) {
                 const sneakers = await response.json();
                 sneakers.forEach(sneaker => {
-                    const item = document.createElement("div");
-                    item.classList.add("sneaker-item");
-                    item.innerHTML = `
-                        <div class='search-results'>
-                            <a href="/sneakerpage?shoe_id=${encodeURIComponent(sneaker.shoe_id)}" style="text-decoration: none; color: inherit; width: 100%; display: block;">
-                                <h3>${sneaker.name}</h3>
-                                <p>Brand: ${sneaker.brand}</p>
-                            </a>
-                        </div>
-                    `;
-                    resultsContainer.appendChild(item);
-                });
+    const item = document.createElement("div");
+    item.classList.add("sneaker-item");
+    item.innerHTML = `
+        <div class='search-results'>
+            <a href="/sneakerpage?shoe_id=${encodeURIComponent(sneaker.shoe_id)}" style="text-decoration: none; color: inherit;">
+                <img src="${sneaker.imgURL}" alt="${sneaker.name}" class="search-result-image">
+                <h3>${sneaker.name}</h3>
+                <p>Brand: ${sneaker.brand}</p>
+                <p>Price: $${sneaker.price}</p>
+            </a>
+        </div>
+    `;
+    resultsContainer.appendChild(item);
+});
+
             } else {
                 resultsContainer.innerHTML = "<p>Failed to fetch sneakers. Please try again.</p>";
             }
@@ -49,6 +52,9 @@
     <div class="form-container">
         <h1>Search for Sneakers</h1>
         <input type="text" id="keyword" name="keyword" placeholder="Enter sneaker name or keyword" oninput="handleInput()" required>
+        <form action="/menu" method="GET">
+            <button class="btn">Back to Menu</button>
+        </form>
     </div>
     <div id="results"></div>
 </body>

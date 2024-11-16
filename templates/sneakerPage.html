@@ -17,11 +17,13 @@
                 <p>Brand: {{ brand }}</p>
                 <p>Price: ${{ price }}</p>
                 <div class = "third-party-app-links">
-                    <form action="/add-wishlist" method="POST">
-                        <button class = "btn">Add to Collection</button>
+                    <form action="{{ url_for('add_to_collection') }}" method="POST">
+                        <input type="hidden" name="shoe_id" value="{{ shoe_id }}">
+                        <button class="btn">Add to Collection</button>
                     </form>
-                    <form action="/add-collection" method="POST">
-                        <button class = "btn">Add to Wishlist</button>
+                    <form action="{{ url_for('add_to_wishlist') }}" method="POST">
+                        <input type="hidden" name="shoe_id" value="{{ shoe_id }}">
+                        <button class="btn">Add to Wishlist</button>
                     </form>
                     {% if name == "Adidas Yeezy Boost 350 Turtle Dove" %}
                         <a href="https://stockx.com/adidas-yeezy-boost-350-turtle-dove-2022" target="_blank">

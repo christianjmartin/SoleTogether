@@ -10,35 +10,48 @@
 
         async function searchSneakers() {
             const keyword = document.getElementById("keyword").value;
+            const resultsContainer = document.getElementById("results");
+
+            resultsContainer.innerHTML = "<p>Loading...</p>";
+
             if (!keyword) {
-                document.getElementById("results").innerHTML = "";
+                resultsContainer.innerHTML = "";
                 return;
             }
 
-            const response = await fetch(`/sneaker_search_results?keyword=${encodeURIComponent(keyword)}`);
-            const resultsContainer = document.getElementById("results");
-            resultsContainer.innerHTML = "";
+            try {
+                const response = await fetch(`/sneaker_search_results?keyword=${encodeURIComponent(keyword)}&limit=25`);
+                resultsContainer.innerHTML = "";
 
-            if (response.ok) {
-                const sneakers = await response.json();
-                sneakers.forEach(sneaker => {
-    const item = document.createElement("div");
-    item.classList.add("sneaker-item");
-    item.innerHTML = `
-        <div class='search-results'>
-            <a href="/sneakerpage?shoe_id=${encodeURIComponent(sneaker.shoe_id)}" style="text-decoration: none; color: inherit;">
-                <img src="${sneaker.imgURL}" alt="${sneaker.name}" class="search-result-image">
-                <h3>${sneaker.name}</h3>
-                <p>Brand: ${sneaker.brand}</p>
-                <p>Price: $${sneaker.price}</p>
-            </a>
-        </div>
-    `;
-    resultsContainer.appendChild(item);
-});
+                if (response.ok) {
+                    const sneakers = await response.json();
 
-            } else {
-                resultsContainer.innerHTML = "<p>Failed to fetch sneakers. Please try again.</p>";
+                    if (sneakers.length === 0) {
+                        resultsContainer.innerHTML = "<p>No sneakers found. Try a different keyword.</p>";
+                        return;
+                    }
+
+                    sneakers.forEach(sneaker => {
+                        const item = document.createElement("div");
+                        item.classList.add("sneaker-item");
+                        item.innerHTML = `
+                            <div class='search-results'>
+                                <a href="/sneakerpage?sku=${encodeURIComponent(sneaker.styleID)}" style="text-decoration: none; color: inherit;">
+                                    <img src="${sneaker.thumbnail}" alt="${sneaker.sneakerName}" class="search-result-image">
+                                    <h3>${sneaker.shoeName}</h3>
+                                    <p>Brand: ${sneaker.brand}</p>
+                                    <p>Price: $${sneaker.retailPrice || 'N/A'}</p>
+                                </a>
+                            </div>
+                        `;
+                        resultsContainer.appendChild(item);
+                    });
+                } else {
+                    resultsContainer.innerHTML = "<p>Failed to fetch sneakers. Please try again.</p>";
+                }
+            } catch (error) {
+                console.error("Error fetching sneaker data:", error);
+                resultsContainer.innerHTML = "<p>An error occurred. Please try again later.</p>";
             }
         }
 

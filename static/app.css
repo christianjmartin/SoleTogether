@@ -323,6 +323,14 @@ html {
     gap: 20px;
 }
 
+.flightclub-image {
+    height: 20px;
+    margin-top: 15px;
+    width: auto;
+    object-fit: cover;
+    gap: 20px;
+}
+
 
 
 .sneaker-discussions {

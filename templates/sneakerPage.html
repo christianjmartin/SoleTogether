@@ -4,94 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/app.css"/>
-    <title>Sneaker Page</title>
+    <title>{{ sneaker.name }}</title>
 </head>
 <body>
-    <div class = sneaker-page-container>
+    <div class="sneaker-page-container">
         <div class="sneaker-info-and-links">
             <div class="sneaker-image-circle">
-                <img src="{{ img_url }}" alt="{{ name }}">
+                <img src="{{ sneaker.img_url }}" alt="{{ sneaker.name }}">
             </div>
             <div class="sneaker-details">
-                <h1>{{ name }}</h1>
-                <p>Brand: {{ brand }}</p>
-                <p>Price: ${{ price }}</p>
-                <div class = "third-party-app-links">
+                <h1>{{ sneaker.name }}</h1>
+                <p>Brand: {{ sneaker.brand }}</p>
+                <p>Average Price: ${{ sneaker.resell_price }}</p>
+                <div class="third-party-app-links">
                     <form action="{{ url_for('add_to_collection') }}" method="POST">
-                        <input type="hidden" name="shoe_id" value="{{ shoe_id }}">
+                        <input type="hidden" name="sku" value="{{ sneaker.sku }}">
                         <button class="btn">Add to Collection</button>
                     </form>
                     <form action="{{ url_for('add_to_wishlist') }}" method="POST">
-                        <input type="hidden" name="shoe_id" value="{{ shoe_id }}">
+                        <input type="hidden" name="sku" value="{{ sneaker.sku }}">
                         <button class="btn">Add to Wishlist</button>
                     </form>
-                    {% if name == "Adidas Yeezy Boost 350 Turtle Dove" %}
-                        <a href="https://stockx.com/adidas-yeezy-boost-350-turtle-dove-2022" target="_blank">
+                    {% if sneaker.stockx_link %}
+                        <a href="{{ sneaker.stockx_link }}" target="_blank">
                             <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
                         </a>
-                        <a href="https://www.goat.com/sneakers/yeezy-boost-350-turtle-dove-2022-aq4832-2022" target="_blank">
+                    {% endif %}
+                    {% if sneaker.goat_link %}
+                        <a href="{{ sneaker.goat_link }}" target="_blank">
                             <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
                         </a>
-                    {% elif name == "Adidas Samba Messi" %}
-                        <a href="https://stockx.com/adidas-samba-inter-miami-cf-messi-pink" target="_blank">
-                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+                    {% endif %}
+                    {% if sneaker.flightclub_link %}
+                        <a href="{{ sneaker.flightclub_link }}" target="_blank">
+                            <img class="flightclub-image" src="{{ url_for('static', filename='flightclub.png') }}" alt="Flight Club link">
                         </a>
-                        <a href="https://www.goat.com/sneakers/lionel-messi-x-samba-inter-miami-cf-home-kit-ih8158?utm_source=google_ads&utm_medium=cpc&utm_campaign=21013309811&utm_content=&gad_source=1&gbraid=0AAAAADQ3c8gGXfdeJWh3j_e9AK9y_O-Bb&gclid=Cj0KCQiAlsy5BhDeARIsABRc6ZvAQ1vSg6r30D0mDbVn6sJM3ceekTHs3js2QH09vCtdCGX_D0zKzEcaAtAfEALw_wcB" target="_blank">
-                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
-                        </a>
-                    {% elif name == "Nike Foamposite Lite Kryptonate" %}
-                        <a href="https://stockx.com/nike-air-foamposite-lite-asg-kryptonate" target="_blank">
-                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
-                        </a>
-                        <a href="https://www.goat.com/sneakers/foamposite-lite-asg-kryptonate-361162-331" target="_blank">
-                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
-                        </a>
-                    {% elif name == "Nike Dunk Low SB Paris" %}
-                        <a href="https://stockx.com/nike-dunk-sb-low-paris?" target="_blank">
-                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
-                        </a>
-                        <a href="https://www.goat.com/sneakers/dunk-low-pro-sb-paris-308270-111" target="_blank">
-                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
-                        </a>
-                    {% elif name == "Nike Dunk Low SB What The" %}
-                        <a href="https://stockx.com/nike-dunk-sb-low-what-the-dunk" target="_blank">
-                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
-                        </a>
-                        <a href="https://www.goat.com/sneakers/sb-what-the-dunk-what-the-dunk-318403-141?" target="_blank">
-                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
-                        </a>
-                    {% elif name == "Nike Air Jordan 4 Eminem" %}
-                        <a href="https://stockx.com/jordan-4-retro-eminem-encore" target="_blank">
-                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
-                        </a>
-                        <a href="https://www.goat.com/sneakers/air-jordan-4-retro-eminem-jbm231m19c1" target="_blank">
-                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
-                        </a>
-                    {% elif name == "Nike Calm Mule" %}
-                        <a href="https://stockx.com/nike-calm-mule-hemp" target="_blank">
-                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
-                        </a>
-                        <a href="https://www.goat.com/sneakers/calm-mule-hemp-fd5130-200" target="_blank">
-                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
-                        </a>
-                    {% elif name == "Nike Dunk Retro High SE" %}
-                        <a href="https://stockx.com/nike-dunk-high-se-hemp-hoops" target="_blank">
-                            <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
-                        </a>
-                        <a href="https://www.goat.com/sneakers/dunk-high-retro-se-hemp-hoops-fj4191-200" target="_blank">
-                            <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
-                        </a>
-                    {% else %}
-                        <img class="stockx-image" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
-                        <img class="goat-image" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
                     {% endif %}
                 </div>
             </div>
         </div>
-        <div class = "sneaker-discussions">
+        <div class="sneaker-discussions">
             <div class="form-group-sneaker-discussions">
-                <form action="{{ url_for('add_discussion', shoe_id=shoe_id) }}" method="POST">
-                    <input type="hidden" name="shoe_id" value="{{ shoe_id }}">
+                <form action="{{ url_for('add_discussion', sku=sneaker.sku) }}" method="POST">
+                    <input type="hidden" name="sku" value="{{ sneaker.sku }}">
                     <textarea name="discussion_body" id="discussion_body" cols="170" rows="3" placeholder="Start a discussion..." required></textarea>
                     <button class="btn2" type="submit">Submit</button>
                 </form>
@@ -100,14 +55,14 @@
                 {% if discussions %}
                     {% for discussion in discussions %}
                         <div class="discussion-item">
-                            <div class = "flex-column">
+                            <div class="flex-column">
                                 <p><strong>{{ discussion.Username }}:</strong> {{ discussion.Body }}</p>
                                 <p class="timestamp">{{ discussion.EntryDate }}</p>
                             </div>
-                            <div class = likes>
-                                <form action="{{ url_for('add_like_sneaker_page', shoe_id=shoe_id) }}" method="POST">
+                            <div class="likes">
+                                <form action="{{ url_for('add_like_sneaker_page', sku=sneaker.sku) }}" method="POST">
                                     <input type="hidden" name="discussion_id" value="{{ discussion.discussion_id }}">
-                                    <input type="hidden" name="shoe_id" value="{{ shoe_id }}">
+                                    <input type="hidden" name="sku" value="{{ sneaker.sku }}">
                                     <button class="like-btn" type="submit">Like</button>
                                 </form>
                                 <small>Likes: {{ discussion.Likes }}</small>
@@ -119,7 +74,7 @@
                 {% endif %}
             </div>
         </div>
-        <div class = "menu-button-container">
+        <div class="menu-button-container">
             <form action="/menu" method="GET">
                 <button class="btn">Back to Menu</button>
             </form>

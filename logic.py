@@ -140,11 +140,11 @@ def get_user_stats(dbCursor, username):
         return {'followers': 0, 'following': 0}
     
 
-def getSneakerDiscussions(dbCursor, name, brand, price):
-    getShoe = "SELECT ShoeID FROM Shoe WHERE Name = ? AND Brand = ? AND AveragePrice = ?"
+def getSneakerDiscussions(dbCursor, sku):
+    getShoe = "SELECT ShoeID FROM Shoe WHERE sku=?"
 
     try:
-        dbCursor.execute(getShoe, (name, brand, price))
+        dbCursor.execute(getShoe, (sku))
         shoe_row = dbCursor.fetchone()
         if shoe_row is None:
             print("No matching ShoeID found.")

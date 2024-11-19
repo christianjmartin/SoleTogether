@@ -3,13 +3,32 @@ import logic
 import sqlite3
 import os
 import requests
+from dataclasses import dataclass
 
 app = Flask(__name__)
 app.secret_key = 'QEWOJFE3FIOENVWIOVCEI'
 
+NODE_API_URL = "http://localhost:5001"
+
+@dataclass
+class Sneaker:
+    resell_price: int
+    brand: str
+    name: str
+    price: float
+    img_url: str
+    sku: str
+    release_date: str
+    description: str
+    stockx_link: str = None
+    goat_link: str = None
+    flightclub_link: str = None
+
 # Path to the database and SQL file
 db_path = os.path.join(os.path.dirname(__file__), 'database.db')
 sql_file_path = os.path.join(os.path.dirname(__file__), 'database.sql')
+
+
 
 def init_db():
     with sqlite3.connect(db_path, check_same_thread=False) as conn:
@@ -74,63 +93,96 @@ def search_page():
 @app.route('/sneaker_search_results', methods=['GET'])
 def search_sneakers():
     keyword = request.args.get('keyword', '')
-    conn = get_db()
-    dbCursor = conn.cursor()
-    dbCursor.execute("SELECT * FROM Shoe WHERE Name LIKE ?", ('%' + keyword + '%',))
-    shoes = dbCursor.fetchall()
-    conn.close()
-    results = [{"shoe_id": shoe[0], "brand": shoe[1], "name": shoe[2], "price": shoe[3], "imgURL": shoe[4]} for shoe in shoes]
-    return jsonify(results)
+    limit = request.args.get('limit', 25) 
+    try:
+        response = requests.get(f"{NODE_API_URL}/sneakers", params={"keyword": keyword, "limit": limit})
+        response.raise_for_status()
+        sneakers = response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching from Sneaks-API: {e}")
+        return jsonify({"error": "Failed to fetch sneakers. Please try again later."}), 500
+
+    return jsonify(sneakers)
 
 @app.route('/sneakerpage', methods=['GET', 'POST'])
 def sneaker_page():
-    shoe_id = request.args.get('shoe_id') if request.method == 'GET' else request.form.get('shoe_id')
-    if not shoe_id:
+    sku = request.args.get('sku') if request.method == 'GET' else request.form.get('sku')
+    if not sku:
         return "Error: Missing shoe_id", 400
 
     conn = get_db()
     dbCursor = conn.cursor()
-    dbCursor.execute("SELECT Brand, Name, AveragePrice, imgURL FROM Shoe WHERE ShoeID = ?", (shoe_id,))
-    shoe = dbCursor.fetchone()
     
-    if shoe is None:
-        return "Sneaker not found", 404
 
-    brand, name, price, img_url = shoe
-    discussions = logic.getSneakerDiscussions(dbCursor, name, brand, price)
+    try:
+        response = requests.get(f"{NODE_API_URL}/sneakers", params={"keyword": sku, "limit": 1})
+        response.raise_for_status()
+        sneaker = response.json()[0]
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching from Sneaks-API: {e}")
+        return jsonify({"error": "Failed to fetch sneakers. Please try again later."}), 500
+
+    average_price = 0
+    resell_prices = sneaker.get('lowestResellPrice')
+    price_values = resell_prices.values()
+    if price_values:
+        average_price = round(sum(price_values) / len(price_values))
+    else:
+        average_price = None
+
+    resell_links = sneaker.get('resellLinks', {})
+    stockx_link = resell_links.get('stockX', None)
+    goat_link = resell_links.get('goat', None)
+    flightclub_link = resell_links.get('flightClub', None)
+
+    sneaker_obj = Sneaker(
+        resell_price=average_price,
+        brand=sneaker.get('brand'),
+        name=sneaker.get('shoeName'),
+        price=sneaker.get('retailPrice'),
+        img_url=sneaker.get('thumbnail'),
+        sku=sku,
+        release_date=sneaker.get('releaseDate'),
+        description=sneaker.get('description'),
+        stockx_link=stockx_link,
+        goat_link=goat_link,
+        flightclub_link=flightclub_link
+    )
+
+    print(sneaker_obj.img_url)
+
+
+    discussions = logic.getSneakerDiscussions(dbCursor, sneaker_obj.sku)
     conn.close()
     
     return render_template(
         'sneakerpage.html',
-        shoe_id=shoe_id,
-        name=name,
-        brand=brand,
-        price=price,
-        img_url=img_url,
+        sneaker=sneaker_obj,
         discussions=discussions
     )
 
 @app.route('/add-discussion', methods=['POST'])
 def add_discussion():
-    shoe_id = request.args.get('shoe_id')
+    sku = request.args.get('shoe_id')
     discussion_body = request.form.get('discussion_body')
     username = session.get('username')
 
-    if not shoe_id:
+    if not sku:
         return "Error: Missing shoe_id", 400
 
     conn = get_db()
     dbCursor = conn.cursor()
     query = "INSERT INTO SneakerDiscussionEntry (ShoeID, Body, Username) VALUES (?, ?, ?)"
     try:
-        dbCursor.execute(query, (shoe_id, discussion_body, username))
+        dbCursor.execute(query, (sku, discussion_body, username))
         conn.commit()
     except Exception as e:
         print(f"Error inserting discussion: {e}")
     finally:
         conn.close()
 
-    return redirect(url_for('sneaker_page', shoe_id=shoe_id))
+    return redirect(url_for('sneaker_page', sku=sku))
 
 @app.route('/add_like_sneaker_page', methods=['POST'])
 def add_like_sneaker_page():

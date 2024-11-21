@@ -125,11 +125,17 @@ def sneaker_page():
 
     average_price = 0
     resell_prices = sneaker.get('lowestResellPrice')
-    price_values = resell_prices.values()
-    if price_values:
-        average_price = round(sum(price_values) / len(price_values))
+    if resell_prices:
+        price_values = resell_prices.values()
+        if price_values:
+            average_price = round(sum(price_values) / len(price_values))
+        else:
+            average_price = None
     else:
-        average_price = None
+        average_price = sneaker.get('retailPrice')
+
+    # if average_price == -1234:
+    #     average_price = sneaker.get('retailPrice')
 
     resell_links = sneaker.get('resellLinks', {})
     stockx_link = resell_links.get('stockX', None)
@@ -164,7 +170,8 @@ def sneaker_page():
 
 @app.route('/add-discussion', methods=['POST'])
 def add_discussion():
-    sku = request.args.get('shoe_id')
+    sku = request.args.get('sku')
+    print(sku)
     discussion_body = request.form.get('discussion_body')
     username = session.get('username')
 
@@ -173,7 +180,7 @@ def add_discussion():
 
     conn = get_db()
     dbCursor = conn.cursor()
-    query = "INSERT INTO SneakerDiscussionEntry (ShoeID, Body, Username) VALUES (?, ?, ?)"
+    query = "INSERT INTO SneakerDiscussionEntry (Sku, Body, Username) VALUES (?, ?, ?)"
     try:
         dbCursor.execute(query, (sku, discussion_body, username))
         conn.commit()
@@ -186,18 +193,18 @@ def add_discussion():
 
 @app.route('/add_like_sneaker_page', methods=['POST'])
 def add_like_sneaker_page():
-    shoe_id = request.form.get('shoe_id')
+    sku = request.form.get('sku')
     discussion_id = request.form.get('discussion_id')
     username = session.get('username')
 
-    get_likes_query = "SELECT Likes, LikedByClientUsernames FROM SneakerDiscussionEntry WHERE SneakerDiscussionEntryID = ? AND ShoeID = ?"
-    update_likes_query = "UPDATE SneakerDiscussionEntry SET Likes = ?, LikedByClientUsernames = ? WHERE SneakerDiscussionEntryID = ? AND ShoeID = ?"
+    get_likes_query = "SELECT Likes, LikedByClientUsernames FROM SneakerDiscussionEntry WHERE SneakerDiscussionEntryID = ? AND Sku = ?"
+    update_likes_query = "UPDATE SneakerDiscussionEntry SET Likes = ?, LikedByClientUsernames = ? WHERE SneakerDiscussionEntryID = ? AND Sku = ?"
     
     conn = get_db()
     dbCursor = conn.cursor()
 
     try:
-        dbCursor.execute(get_likes_query, (discussion_id, shoe_id))
+        dbCursor.execute(get_likes_query, (discussion_id, sku))
         result = dbCursor.fetchone()
         
         if result:
@@ -212,7 +219,7 @@ def add_like_sneaker_page():
                 current_likes += 1
 
             updated_liked_by_clients = ','.join(liked_by_clients)
-            dbCursor.execute(update_likes_query, (current_likes, updated_liked_by_clients, discussion_id, shoe_id))
+            dbCursor.execute(update_likes_query, (current_likes, updated_liked_by_clients, discussion_id, sku))
             conn.commit()
 
     except Exception as e:
@@ -220,7 +227,7 @@ def add_like_sneaker_page():
     finally:
         conn.close()
 
-    return redirect(url_for('sneaker_page', shoe_id=shoe_id))
+    return redirect(url_for('sneaker_page', sku=sku))
 
 @app.route('/discussion', methods=['GET'])
 def view_discussion():
@@ -296,16 +303,22 @@ def follow_user(username):
 def add_to_collection():
     if 'username' not in session:
         return jsonify({'error': 'Not logged in'}), 401
-    
-    shoe_id = request.form.get('shoe_id')
-    if not shoe_id:
-        return jsonify({'error': 'No shoe specified'}), 400
-    
+
+    sku = request.form.get('sku')
+    name = request.form.get('name')
+    brand = request.form.get('brand')
+    image = request.form.get('image')
+    price = request.form.get('price')
+
+    if not sku or not name or not brand or not image or not price:
+        return jsonify({'error': 'Missing required fields'}), 400
+
     conn = get_db()
     dbCursor = conn.cursor()
-    
-    if logic.add_to_collection(conn, dbCursor, session['username'], shoe_id):
-        return redirect(url_for('sneaker_page', shoe_id=shoe_id))
+
+    if logic.add_to_collection(conn, dbCursor, session['username'], sku, name, brand, price, image):
+        print(f"Redirecting to sneaker_page with sku: {sku}")
+        return redirect(url_for('sneaker_page', sku=sku))
     else:
         return jsonify({'error': 'Failed to add to collection'}), 500
 
@@ -314,14 +327,19 @@ def move_to_collection():
     if 'username' not in session:
         return jsonify({'error': 'Not logged in'}), 401
     
-    shoe_id = request.form.get('shoe_id')
-    if not shoe_id:
-        return jsonify({'error': 'No shoe specified'}), 400
+    sku = request.form.get('sku')
+    name = request.form.get('name')
+    brand = request.form.get('brand')
+    image = request.form.get('image')
+    price = request.form.get('price')
+
+    if not sku or not name or not brand or not image or not price:
+        return jsonify({'error': 'Missing required fields'}), 400
     
     conn = get_db()
     dbCursor = conn.cursor()
     
-    if logic.move_to_collection(conn, dbCursor, session['username'], shoe_id):
+    if logic.move_to_collection(conn, dbCursor, session['username'], sku, name, brand, price, image):
         return redirect(url_for('view_wishlist'))
     else:
         return jsonify({'error': 'Failed to move to collection'}), 500
@@ -352,16 +370,21 @@ def view_wishlist():
 def add_to_wishlist():
     if 'username' not in session:
         return jsonify({'error': 'Not logged in'}), 401
-    
-    shoe_id = request.form.get('shoe_id')
-    if not shoe_id:
-        return jsonify({'error': 'No shoe specified'}), 400
+
+    sku = request.form.get('sku')
+    name = request.form.get('name')
+    brand = request.form.get('brand')
+    image = request.form.get('image')
+    price = request.form.get('price')
+
+    if not sku or not name or not brand or not image or not price:
+        return jsonify({'error': 'Missing required fields'}), 400
     
     conn = get_db()
     dbCursor = conn.cursor()
     
-    if logic.add_to_wishlist(conn, dbCursor, session['username'], shoe_id):
-        return redirect(url_for('sneaker_page', shoe_id=shoe_id))
+    if logic.add_to_wishlist(conn, dbCursor, session['username'], sku, name, brand, price, image):
+        return redirect(url_for('sneaker_page', sku=sku))
     else:
         return jsonify({'error': 'Failed to add to wishlist'}), 500
 
@@ -370,14 +393,14 @@ def remove_from_wishlist():
     if 'username' not in session:
         return jsonify({'error': 'Not logged in'}), 401
     
-    shoe_id = request.form.get('shoe_id')
-    if not shoe_id:
+    wID = request.form.get('wishlist_id')
+    if not wID:
         return jsonify({'error': 'No shoe specified'}), 400
     
     conn = get_db()
     dbCursor = conn.cursor()
     
-    if logic.remove_from_wishlist(conn, dbCursor, session['username'], shoe_id):
+    if logic.remove_from_wishlist(conn, dbCursor, session['username'], wID):
         return redirect(url_for('view_wishlist'))
     else:
         return jsonify({'error': 'Failed to remove from wishlist'}), 500
@@ -405,14 +428,15 @@ def remove_from_collection():
     if 'username' not in session:
         return jsonify({'error': 'Not logged in'}), 401
     
-    shoe_id = request.form.get('shoe_id')
-    if not shoe_id:
+    cID = request.form.get('collection_id')
+    print(cID)
+    if not cID:
         return jsonify({'error': 'No shoe specified'}), 400
     
     conn = get_db()
     dbCursor = conn.cursor()
     
-    if logic.remove_from_collection(conn, dbCursor, session['username'], shoe_id):
+    if logic.remove_from_collection(conn, dbCursor, session['username'], cID):
         return redirect(url_for('view_collection'))
     else:
         return jsonify({'error': 'Failed to remove from collection'}), 500

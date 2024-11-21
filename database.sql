@@ -4,28 +4,34 @@ CREATE TABLE IF NOT EXISTS Client (
     Password TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Shoe (
-    ShoeID INTEGER PRIMARY KEY AUTOINCREMENT,
-    Brand TEXT,
-    Name TEXT,
-    AveragePrice INT,
-    imgURL TEXT
-);
+-- CREATE TABLE IF NOT EXISTS Shoe (
+--     ShoeID INTEGER PRIMARY KEY AUTOINCREMENT,
+--     Brand TEXT,
+--     Name TEXT,
+--     AveragePrice INT,
+--     imgURL TEXT
+-- );
 
 CREATE TABLE IF NOT EXISTS Collection (
     CollectionID INTEGER PRIMARY KEY AUTOINCREMENT,
     ClientUsername TEXT NOT NULL,
-    ShoeID INT NOT NULL,
-    FOREIGN KEY (ClientUsername) REFERENCES Client(Username),
-    FOREIGN KEY (ShoeID) REFERENCES Shoe(ShoeID)
+    Sku TEXT NOT NULL,
+    Brand TEXT NOT NULL,
+    Name TEXT NOT NULL,
+    ResellPrice TEXT NOT NULL,
+    ImageURL TEXT NOT NULL,
+    FOREIGN KEY (ClientUsername) REFERENCES Client(Username)
 );
 
 CREATE TABLE IF NOT EXISTS Wishlist (
     WishlistID INTEGER PRIMARY KEY AUTOINCREMENT,
     ClientUsername TEXT NOT NULL,
-    ShoeID INT NOT NULL,
-    FOREIGN KEY (ClientUsername) REFERENCES Client(Username),
-    FOREIGN KEY (ShoeID) REFERENCES Shoe(ShoeID)
+    Sku TEXT NOT NULL,
+    Brand TEXT NOT NULL,
+    Name TEXT NOT NULL,
+    ResellPrice TEXT NOT NULL,
+    ImageURL TEXT NOT NULL,
+    FOREIGN KEY (ClientUsername) REFERENCES Client(Username)
 );
 
 CREATE TABLE IF NOT EXISTS DiscussionEntry (
@@ -38,13 +44,12 @@ CREATE TABLE IF NOT EXISTS DiscussionEntry (
 
 CREATE TABLE IF NOT EXISTS SneakerDiscussionEntry (
     SneakerDiscussionEntryID INTEGER PRIMARY KEY AUTOINCREMENT,
-    ShoeID INT NOT NULL,
+    Sku TEXT NOT NULL,
     Body TEXT,
     Username TEXT NOT NULL,
     Likes INT DEFAULT 0,
     EntryDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     LikedByClientUsernames TEXT DEFAULT '',
-    FOREIGN KEY (ShoeID) REFERENCES Shoe(ShoeID),
     FOREIGN KEY (Username) REFERENCES Client(Username)
 );
 

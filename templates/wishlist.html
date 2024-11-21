@@ -10,18 +10,23 @@
         <div class="sneaker-grid">
             {% for item in items %}
             <div class="sneaker-card">
-                <img src="{{ item[4] }}" alt="{{ item[2] }}" class="wishlist-image">
+                <img src="{{ item[5] }}" alt="{{ item[2] }}" class="wishlist-image">
                 <div class="sneaker-info">
-                    <h3>{{ item[2] }}</h3>
-                    <p>{{ item[1] }}</p>
-                    <p>${{ item[3] }}</p>
+                    <h3>{{ item[3] }}</h3>
+                    <p>{{ item[2] }}</p>
+                    <p>${{ item[4] }}</p>
                     <div class="button-group">
                         <form action="{{ url_for('move_to_collection') }}" method="post">
-                            <input type="hidden" name="shoe_id" value="{{ item[0] }}">
+                            <input type="hidden" name="wishlist_id" value="{{ item[0] }}">
+                            <input type="hidden" name="sku" value="{{ item[1] }}">
+                            <input type="hidden" name="image" value="{{ item[5] }}">
+                            <input type="hidden" name="name" value="{{ item[3] }}">
+                            <input type="hidden" name="brand" value="{{ item[2] }}">
+                            <input type="hidden" name="price" value="{{ item[4] }}">
                             <button type="submit" class="btn">Move to Collection</button>
                         </form>
                         <form action="{{ url_for('remove_from_wishlist') }}" method="post">
-                            <input type="hidden" name="shoe_id" value="{{ item[0] }}">
+                            <input type="hidden" name="wishlist_id" value="{{ item[0] }}">
                             <button type="submit" class="btn">Remove</button>
                         </form>
                     </div>

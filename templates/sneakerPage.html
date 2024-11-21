@@ -16,13 +16,22 @@
                 <h1>{{ sneaker.name }}</h1>
                 <p>Brand: {{ sneaker.brand }}</p>
                 <p>Average Price: ${{ sneaker.resell_price }}</p>
+                <!-- add release date  -->
                 <div class="third-party-app-links">
                     <form action="{{ url_for('add_to_collection') }}" method="POST">
                         <input type="hidden" name="sku" value="{{ sneaker.sku }}">
+                        <input type="hidden" name="image" value="{{ sneaker.img_url }}">
+                        <input type="hidden" name="name" value="{{ sneaker.name }}">
+                        <input type="hidden" name="brand" value="{{ sneaker.brand }}">
+                        <input type="hidden" name="price" value="{{ sneaker.resell_price }}">
                         <button class="btn">Add to Collection</button>
                     </form>
                     <form action="{{ url_for('add_to_wishlist') }}" method="POST">
                         <input type="hidden" name="sku" value="{{ sneaker.sku }}">
+                        <input type="hidden" name="image" value="{{ sneaker.img_url }}">
+                        <input type="hidden" name="name" value="{{ sneaker.name }}">
+                        <input type="hidden" name="brand" value="{{ sneaker.brand }}">
+                        <input type="hidden" name="price" value="{{ sneaker.resell_price }}">
                         <button class="btn">Add to Wishlist</button>
                     </form>
                     {% if sneaker.stockx_link %}

@@ -141,22 +141,22 @@ def get_user_stats(dbCursor, username):
     
 
 def getSneakerDiscussions(dbCursor, sku):
-    getShoe = "SELECT ShoeID FROM Shoe WHERE sku=?"
+    # getShoe = "SELECT ShoeID FROM Shoe WHERE sku=?"
 
-    try:
-        dbCursor.execute(getShoe, (sku))
-        shoe_row = dbCursor.fetchone()
-        if shoe_row is None:
-            print("No matching ShoeID found.")
-            return [] 
-        shoeID = shoe_row[0]
-    except Exception as e:
-        print(f"Error fetching ShoeID: {e}")
-        return []
+    # try:
+    #     dbCursor.execute(getShoe, (sku))
+    #     shoe_row = dbCursor.fetchone()
+    #     if shoe_row is None:
+    #         print("No matching ShoeID found.")
+    #         return [] 
+    #     sku = shoe_row[0]
+    # except Exception as e:
+    #     print(f"Error fetching ShoeID: {e}")
+    #     return []
     
-    query = "SELECT SneakerDiscussionEntryID, Username, Body, EntryDate, Likes FROM SneakerDiscussionEntry WHERE ShoeID = ? ORDER BY EntryDate DESC"
+    query = "SELECT SneakerDiscussionEntryID, Username, Body, EntryDate, Likes FROM SneakerDiscussionEntry WHERE Sku = ? ORDER BY EntryDate DESC"
     try:
-        dbCursor.execute(query, (shoeID,))
+        dbCursor.execute(query, (sku,))
         results = dbCursor.fetchall()
         
         discussions = []
@@ -180,10 +180,10 @@ def getSneakerDiscussions(dbCursor, sku):
         return []
    
 
-def add_to_collection(conn, dbCursor, username, shoe_id):
+def add_to_collection(conn, dbCursor, username, sku, name, brand, price, image):
     try:
-        query = "INSERT INTO Collection (ClientUsername, ShoeID) VALUES (?, ?)"
-        dbCursor.execute(query, (username, shoe_id))
+        query = "INSERT INTO Collection (ClientUsername, Sku, Brand, Name, ResellPrice, ImageURL) VALUES (?, ?, ?, ?, ?, ?)"
+        dbCursor.execute(query, (username, sku, brand, name, price, image))
         conn.commit()
         return True
     except Exception as e:
@@ -191,12 +191,7 @@ def add_to_collection(conn, dbCursor, username, shoe_id):
         return False
 
 def get_collection(dbCursor, username):
-    query = """
-        SELECT DISTINCT s.ShoeID, s.Brand, s.Name, s.AveragePrice, s.imgURL 
-        FROM Collection c
-        JOIN Shoe s ON c.ShoeID = s.ShoeID
-        WHERE c.ClientUsername = ?
-    """
+    query = "SELECT CollectionID, Sku, Brand, Name, ResellPrice, ImageURL FROM Collection WHERE ClientUsername = ? ORDER BY CollectionID DESC"
     try:
         dbCursor.execute(query, (username,))
         return dbCursor.fetchall()
@@ -204,15 +199,15 @@ def get_collection(dbCursor, username):
         print(f"Error fetching collection: {e}")
         return []
 
-def move_to_collection(conn, dbCursor, username, shoe_id):
+def move_to_collection(conn, dbCursor, username, sku, name, brand, price, image):
     try:
         # Remove from wishlist
-        remove_query = "DELETE FROM Wishlist WHERE ClientUsername = ? AND ShoeID = ?"
-        dbCursor.execute(remove_query, (username, shoe_id))
+        remove_query = "DELETE FROM Wishlist WHERE ClientUsername = ? AND Sku = ?"
+        dbCursor.execute(remove_query, (username, sku))
         
         # Add to collection
-        add_query = "INSERT INTO Collection (ClientUsername, ShoeID) VALUES (?, ?)"
-        dbCursor.execute(add_query, (username, shoe_id))
+        add_query = "INSERT INTO Collection (ClientUsername, Sku, Brand, Name, ResellPrice, ImageURL) VALUES (?, ?, ?, ?, ?, ?)"
+        dbCursor.execute(add_query, (username, sku, brand, name, price, image))
         
         conn.commit()
         return True
@@ -220,30 +215,26 @@ def move_to_collection(conn, dbCursor, username, shoe_id):
         print(f"Error moving to collection: {e}")
         return False
 
-def add_to_wishlist(conn, dbCursor, username, shoe_id):
+def add_to_wishlist(conn, dbCursor, username, sku, name, brand, price, image):
     try:
         # Check if shoe already exists in wishlist
-        check_query = "SELECT * FROM Wishlist WHERE ClientUsername = ? AND ShoeID = ?"
-        dbCursor.execute(check_query, (username, shoe_id))
+        check_query = "SELECT * FROM Wishlist WHERE ClientUsername = ? AND Sku = ?"
+        dbCursor.execute(check_query, (username, sku))
         if dbCursor.fetchone():
             return True  # Item already in wishlist
             
-        query = "INSERT INTO Wishlist (ClientUsername, ShoeID) VALUES (?, ?)"
-        dbCursor.execute(query, (username, shoe_id))
+        query = "INSERT INTO Wishlist (ClientUsername, Sku, Brand, Name, ResellPrice, ImageURL) VALUES (?, ?, ?, ?, ?, ?)"
+        dbCursor.execute(query, (username, sku, brand, name, price, image))
         conn.commit()
         return True
+    
     except Exception as e:
-        print(f"Error adding to wishlist: {e}")
+        print(f"Error adding to collection: {e}")
         return False
     
 
 def get_wishlist(dbCursor, username):
-    query = """
-        SELECT s.ShoeID, s.Brand, s.Name, s.AveragePrice, s.imgURL 
-        FROM Wishlist w
-        JOIN Shoe s ON w.ShoeID = s.ShoeID
-        WHERE w.ClientUsername = ?
-    """
+    query = "SELECT WishlistID, Sku, Brand, Name, ResellPrice, ImageURL FROM Wishlist WHERE ClientUsername = ? ORDER BY WishlistID DESC"
     try:
         dbCursor.execute(query, (username,))
         return dbCursor.fetchall()
@@ -251,20 +242,20 @@ def get_wishlist(dbCursor, username):
         print(f"Error fetching wishlist: {e}")
         return []
 
-def remove_from_wishlist(conn, dbCursor, username, shoe_id):
+def remove_from_wishlist(conn, dbCursor, username, wID):
     try:
-        query = "DELETE FROM Wishlist WHERE ClientUsername = ? AND ShoeID = ?"
-        dbCursor.execute(query, (username, shoe_id))
+        query = "DELETE FROM Wishlist WHERE ClientUsername = ? AND WishlistID = ?"
+        dbCursor.execute(query, (username, wID))
         conn.commit()
         return True
     except Exception as e:
         print(f"Error removing from wishlist: {e}")
         return False
     
-def remove_from_collection(conn, dbCursor, username, shoe_id):
+def remove_from_collection(conn, dbCursor, username, sku):
     try:
-        query = "DELETE FROM Collection WHERE ClientUsername = ? AND ShoeID = ?"
-        dbCursor.execute(query, (username, shoe_id))
+        query = "DELETE FROM Collection WHERE ClientUsername = ? AND CollectionID = ?"
+        dbCursor.execute(query, (username, sku))
         conn.commit()
         return True
     except Exception as e:

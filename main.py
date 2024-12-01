@@ -441,6 +441,32 @@ def remove_from_collection():
     else:
         return jsonify({'error': 'Failed to remove from collection'}), 500
 
+#Profile
+
+@app.route('/profile/<username>')
+def view_profile(username):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    # Get user stats
+    user_stats = logic.get_user_stats(dbCursor, username)
+    
+    # Get posts, followers, and following
+    posts = logic.get_user_posts(dbCursor, username)
+    followers = logic.get_followers(dbCursor, username)
+    following_users = logic.get_following(dbCursor, username)
+    
+    return render_template('profile.html',
+                         user={'username': username},
+                         stats=user_stats,
+                         posts=posts,
+                         followers=followers,
+                         following_users=following_users)
+
+
 with app.app_context():
     init_db()
 

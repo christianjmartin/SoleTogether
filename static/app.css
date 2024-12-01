@@ -412,8 +412,6 @@ html {
 
 
 
-
-
 /* GENERAL DISCUSSION STYLING */
 
 
@@ -465,4 +463,147 @@ html {
 
 .sneaker-info {
     margin-top: 10px;
+}
+
+/*Profile Pic*/
+
+/* Update the menu profile icon */
+.profile-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid #e6edf0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.profile-icon:hover {
+    transform: scale(1.05);
+}
+
+/* Update main profile header styles */
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Keep content centered */
+    gap: 30px;
+    background-color: #e6edf0;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 8px 16px rgba(94, 94, 94, 0.2);
+    border: 1px solid #b6c0c4;
+    margin-bottom: 30px;
+    width: 100%; /* Make it full width */
+    max-width: none; /* Remove any max-width limitation */
+}
+.profile-picture {
+    max-width: 45px !important;
+    max-height: 45px !important;
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Add container for profile content */
+.profile-container {
+    width: 100%;
+    padding: 20px;
+    margin: 0;
+}
+
+/* Update follower/following card styles */
+.user-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e6edf0;
+}
+
+.user-info {
+    flex-grow: 1;
+}
+
+.user-info h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.user-info p {
+    margin: 5px 0 0;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Ensure proper grid layout for users */
+.users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+.profile-content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);  /* Creates 3 equal columns */
+    gap: 20px;  /* Space between columns */
+    width: 100%;
+    padding: 20px;
+}
+
+.profile-section {
+    background-color: #e6edf0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 8px 16px rgba(94, 94, 94, 0.2);
+    border: 1px solid #b6c0c4;
+}
+
+.profile-section h2 {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.profile-section-content {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    max-height: 500px;  /* Set a max height */
+    overflow-y: auto;   /* Add scroll if content overflows */
+}
+/* Specific profile picture override styles */
+.profile-container .profile-header .profile-picture {
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* Add this to center the content */
+    gap: 10px;
+    text-align: center;  /* Add this to center the text */
 }

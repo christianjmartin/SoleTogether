@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}"/>
+    <title>{{ user.username }}'s Profile</title>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="Profile Picture">
+            <div class="profile-info">
+                <h1>{{ user.username }}</h1>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ stats.followers }}</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ stats.following }}</span>
+                        <span class="stat-label">Following</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Three Column Layout -->
+        <div class="profile-content">
+            <!-- Following Section -->
+            <div class="profile-section">
+                <h2>Following</h2>
+                <div class="profile-section-content">
+                    {% for following in following_users %}
+                    <div class="user-card">
+                        <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="User avatar">
+                        <div class="user-info">
+                            <h3>{{ following.username }}</h3>
+                            <p>Following since {{ following.date_followed }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Posts Section -->
+            <div class="profile-section">
+                <h2>My Posts</h2>
+                <div class="profile-section-content">
+                    {% for post in posts %}
+                    <div class="post-item">
+                        <div class="post-content">
+                            <p class="post-text">{{ post.body }}</p>
+                            <div class="post-metadata">
+                                <span class="post-date">{{ post.date }}</span>
+                                <span class="post-likes">{{ post.likes }} likes</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Followers Section -->
+            <div class="profile-section">
+                <h2>Followers</h2>
+                <div class="profile-section-content">
+                    {% for follower in followers %}
+                    <div class="user-card">
+                        <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="User avatar">
+                        <div class="user-info">
+                            <h3>{{ follower.username }}</h3>
+                            <p>Following since {{ follower.date_followed }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="menu-button-container">
+            <form action="/menu" method="GET">
+                <button class="btn">Back to Menu</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

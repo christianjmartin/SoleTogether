@@ -261,3 +261,69 @@ def remove_from_collection(conn, dbCursor, username, sku):
     except Exception as e:
         print(f"Error removing from collection: {e}")
         return False
+    
+#Profile Pic
+def get_user_posts(dbCursor, username):
+    """Get all posts by a user (both general and sneaker discussions)"""
+    query = """
+        SELECT 'Discussion' as type, Body, Username, Likes, 
+               datetime('now') as PostDate
+        FROM DiscussionEntry
+        WHERE Username = ?
+        UNION ALL
+        SELECT 'Sneaker' as type, Body, Username, Likes, 
+               EntryDate as PostDate
+        FROM SneakerDiscussionEntry
+        WHERE Username = ?
+        ORDER BY PostDate DESC
+    """
+    try:
+        dbCursor.execute(query, (username, username))
+        posts = dbCursor.fetchall()
+        return [{
+            'type': post[0],
+            'body': post[1],
+            'likes': post[3],
+            'date': post[4]
+        } for post in posts]
+    except Exception as e:
+        print(f"Error fetching user posts: {e}")
+        return []
+
+def get_followers(dbCursor, username):
+    """Get users following this user"""
+    query = """
+        SELECT FollowerUsername, DateFollowed
+        FROM Follows
+        WHERE FollowingUsername = ?
+        ORDER BY DateFollowed DESC
+    """
+    try:
+        dbCursor.execute(query, (username,))
+        followers = dbCursor.fetchall()
+        return [{
+            'username': follower[0],
+            'date_followed': follower[1]
+        } for follower in followers]
+    except Exception as e:
+        print(f"Error fetching followers: {e}")
+        return []
+
+def get_following(dbCursor, username):
+    """Get users this user is following"""
+    query = """
+        SELECT FollowingUsername, DateFollowed
+        FROM Follows
+        WHERE FollowerUsername = ?
+        ORDER BY DateFollowed DESC
+    """
+    try:
+        dbCursor.execute(query, (username,))
+        following = dbCursor.fetchall()
+        return [{
+            'username': following[0],
+            'date_followed': following[1]
+        } for following in following]
+    except Exception as e:
+        print(f"Error fetching following: {e}")
+        return []

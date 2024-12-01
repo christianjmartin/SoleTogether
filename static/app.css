@@ -571,24 +571,25 @@ html {
 }
 
 .profile-section {
-    background-color: #e6edf0;
+    background-color: var(--background-secondary);  /* Instead of hardcoded #e6edf0 */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 8px 16px rgba(94, 94, 94, 0.2);
-    border: 1px solid #b6c0c4;
+    border: 1px solid var(--border-color);
+}
+
+.profile-section-content {
+    background-color: var(--card-background);  /* Instead of hardcoded white */
+    border-radius: 8px;
+    padding: 15px;
+    max-height: 500px;
+    overflow-y: auto;
 }
 
 .profile-section h2 {
     margin-bottom: 15px;
     text-align: center;
-}
-
-.profile-section-content {
-    background-color: white;
-    border-radius: 8px;
-    padding: 15px;
-    max-height: 500px;  /* Set a max height */
-    overflow-y: auto;   /* Add scroll if content overflows */
+    color: var(--text-primary);  /* Make sure headers use theme text color */
 }
 /* Specific profile picture override styles */
 .profile-container .profile-header .profile-picture {

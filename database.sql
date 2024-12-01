@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS Client (
     ClientID INTEGER PRIMARY KEY AUTOINCREMENT,
     Username TEXT NOT NULL,
-    Password TEXT NOT NULL
+    Password TEXT NOT NULL,
+    theme_preference TEXT DEFAULT 'light'
 );
 
 -- CREATE TABLE IF NOT EXISTS Shoe (

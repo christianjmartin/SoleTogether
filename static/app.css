@@ -607,3 +607,139 @@ html {
     gap: 10px;
     text-align: center;  /* Add this to center the text */
 }
+
+/* Dark Mode Styling */
+:root {
+    /* Light theme (default) */
+    --background-primary: rgb(246, 246, 246);
+    --background-secondary: #ffffff;
+    --background-tertiary: #e5e5e5;
+    --text-primary: #000000;
+    --text-secondary: #666666;
+    --accent-color: rgb(132, 182, 211);
+    --border-color: #b6c0c4;
+    --shadow-color: rgba(94, 94, 94, 0.2);
+    --card-background: #ffffff;
+    --card-hover: #f7f7f7;
+}
+
+[data-theme="dark"] {
+    /* Dark theme */
+    --background-primary: #1A1A1B;
+    --background-secondary: #272729;
+    --background-tertiary: #343536;
+    --text-primary: #FFFFFF;
+    --text-secondary: #818384;
+    --accent-color: #0079D3;
+    --border-color: #343536;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --card-background: #272729;
+    --card-hover: #2D2D2E;
+}
+
+/* Update existing elements to use variables */
+body {
+    background-color: var(--background-primary);
+    color: var(--text-primary);
+}
+
+/* Theme toggle button styling */
+.top-right-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.theme-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease;
+}
+
+.theme-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Update existing components with CSS variables */
+.releases-box {
+    background-color: var(--background-tertiary);
+}
+
+.releases-box-section {
+    background-color: var(--card-background);
+    color: var(--text-primary);
+}
+
+.search-results {
+    background-color: var(--card-background);
+    border-color: var(--border-color);
+}
+
+.search-results:hover {
+    background-color: var(--card-hover);
+}
+
+.sneaker-info-and-links {
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+}
+
+.sneaker-discussions {
+    background-color: var(--background-secondary);
+}
+
+.discussion-item {
+    background-color: var(--card-background);
+}
+
+.general-discussion-box {
+    background-color: var(--background-tertiary);
+}
+
+.general-discussion-entry {
+    background-color: var(--card-background);
+}
+
+.sneaker-card {
+    background-color: var(--card-background);
+    color: var(--text-primary);
+}
+
+.sneaker-card:hover {
+    background-color: var(--card-hover);
+}
+
+.profile-header {
+    background-color: var(--background-secondary);
+}
+
+.user-card {
+    background-color: var(--card-background);
+    color: var(--text-primary);
+}
+
+input, textarea {
+    background-color: var(--card-background);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+input::placeholder, textarea::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Add smooth transition for theme switching */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}

@@ -451,22 +451,93 @@ def view_profile(username):
     conn = get_db()
     dbCursor = conn.cursor()
     
-    # Get user stats
+    # Get user stats (followers/following)
     user_stats = logic.get_user_stats(dbCursor, username)
     
-    # Get posts, followers, and following
+    # Get user posts
     posts = logic.get_user_posts(dbCursor, username)
-    followers = logic.get_followers(dbCursor, username)
-    following_users = logic.get_following(dbCursor, username)
+    
+    # Get collection items
+    collection_items = logic.get_collection(dbCursor, username)
+    collection_count = len(collection_items)
+    
+    # Get wishlist items
+    wishlist_items = logic.get_wishlist(dbCursor, username)
+    wishlist_count = len(wishlist_items)
     
     return render_template('profile.html',
                          user={'username': username},
                          stats=user_stats,
                          posts=posts,
-                         followers=followers,
-                         following_users=following_users)
+                         collection_items=collection_items,
+                         wishlist_items=wishlist_items,
+                         collection_count=collection_count,
+                         wishlist_count=wishlist_count)
 
+@app.route('/save-theme', methods=['POST'])
+def save_theme():
+    if 'username' not in session:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    theme = request.json.get('theme')
+    if theme not in ['light', 'dark']:
+        return jsonify({'error': 'Invalid theme'}), 400
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    try:
+        # First, check if theme_preference column exists
+        dbCursor.execute("""
+            SELECT name FROM pragma_table_info('Client') 
+            WHERE name='theme_preference'
+        """)
+        if not dbCursor.fetchone():
+            # Add the column if it doesn't exist
+            dbCursor.execute("""
+                ALTER TABLE Client 
+                ADD COLUMN theme_preference TEXT DEFAULT 'light'
+            """)
+        
+        # Update the user's theme preference
+        dbCursor.execute(
+            "UPDATE Client SET theme_preference = ? WHERE Username = ?",
+            (theme, session['username'])
+        )
+        conn.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Error saving theme preference: {e}")
+        return jsonify({'error': 'Database error'}), 500
 
+@app.route('/get-theme')
+def get_theme():
+    if 'username' not in session:
+        return jsonify({'theme': 'light'})
+    
+    conn = get_db()
+    dbCursor = conn.cursor()
+    
+    try:
+        # First, check if theme_preference column exists
+        dbCursor.execute("""
+            SELECT name FROM pragma_table_info('Client') 
+            WHERE name='theme_preference'
+        """)
+        if not dbCursor.fetchone():
+            return jsonify({'theme': 'light'})
+        
+        dbCursor.execute(
+            "SELECT theme_preference FROM Client WHERE Username = ?",
+            (session['username'],)
+        )
+        result = dbCursor.fetchone()
+        theme = result[0] if result and result[0] else 'light'
+        return jsonify({'theme': theme})
+    except Exception as e:
+        print(f"Error getting theme preference: {e}")
+        return jsonify({'theme': 'light'})
+    
 with app.app_context():
     init_db()
 

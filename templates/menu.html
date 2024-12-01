@@ -4,18 +4,24 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="static/app.css"/>
+        <script src="{{ url_for('static', filename='theme.js') }}"></script>
         <title>SoleTogether</title>
     </head>
 <body>
         <div class="top-of-menu">
-        <h2>SoleTogether</h2>
-        <p>Main Menu</p>
-        <a href="{{ url_for('view_profile', username=session.username) }}">
-            <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="profile icon" style="cursor: pointer;">
-        </a>
-    </div>
-    <div class = "menu-container">
-        <div class = "left-column">
+            <h2>SoleTogether</h2>
+            <p>Main Menu</p>
+            <div class="top-right-controls">
+                <button id="theme-toggle" class="theme-btn">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <a href="{{ url_for('view_profile', username=session.username) }}">
+                    <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="profile icon" style="cursor: pointer;">
+                </a>
+            </div>
+        </div>
+    <div class="menu-container">
+        <div class="left-column">
             <form action="/discussion" method="GET">
                 <button class="btn">Discussions</button>
             </form>
@@ -29,37 +35,37 @@
             </form>
             <br>
             <form action="/sneakerSearch" method="POST">
-                <button class = "btn">Search Sneakers</button>
+                <button class="btn">Search Sneakers</button>
             </form>
             <!-- <br>
             <form action="/userSearch" method="POST">
                 <button class = "btn">Search Users</button>
             </form> -->
         </div>
-        <div class = "column releases-box">
-            <div class = "releases-box-title">
+        <div class="column releases-box">
+            <div class="releases-box-title">
                 <p>New Releases from: NIKE</p>
             </div>
-            <div class = "releases-box-section">
+            <div class="releases-box-section">
                 <b>Nike Calm Mule</b>
                 <p>Average Price: $60</p>
                 <img src="{{ url_for('static', filename='calm.jpeg') }}" alt="{{ shoe }}">
             </div>
-            <div class = "releases-box-section">     
+            <div class="releases-box-section">     
                 <b>Nike Dunk Retro High SE</b>
                 <p>Average Price: $100</p>
                 <img src="{{ url_for('static', filename='grDunk.jpeg') }}" alt="{{ shoe }}">
             </div>
 
-            <div class = "releases-box-title">
-                <p class = "spacing-10px">Popular Releases from: ADIDAS</p>
+            <div class="releases-box-title">
+                <p class="spacing-10px">Popular Releases from: ADIDAS</p>
             </div>
-            <div class = "releases-box-section">
+            <div class="releases-box-section">
                 <b>Adidas Yeezy Boost 350 Turtle Dove</b>
                 <p>Average Price: $375</p>
                 <img src="{{ url_for('static', filename='dove.jpeg') }}" alt="{{ shoe }}">
             </div>
-            <div class = "releases-box-section">
+            <div class="releases-box-section">
                 <b>Adidas Samba Messi</b>
                 <p>Average Price: $110</p>
                 <img src="{{ url_for('static', filename='messi.jpeg') }}" alt="{{ shoe }}">

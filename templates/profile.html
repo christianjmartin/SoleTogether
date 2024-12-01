@@ -5,40 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}"/>
     <title>{{ user.username }}'s Profile</title>
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
 </head>
 <body>
-    <div class="profile-container">
-        <!-- Profile Header -->
-        <div class="profile-header">
-            <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="Profile Picture">
-            <div class="profile-info">
-                <h1>{{ user.username }}</h1>
-                <div class="profile-stats">
-                    <div class="stat-item">
-                        <span class="stat-number">{{ stats.followers }}</span>
-                        <span class="stat-label">Followers</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">{{ stats.following }}</span>
-                        <span class="stat-label">Following</span>
-                    </div>
+    <div class="profile-header">
+        <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="Profile Picture">
+        <div class="profile-info">
+            <h1>{{ user.username }}</h1>
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-number">{{ stats.followers }}</span>
+                    <span class="stat-label">Followers</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ stats.following }}</span>
+                    <span class="stat-label">Following</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ collection_count }}</span>
+                    <span class="stat-label">In Collection</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ wishlist_count }}</span>
+                    <span class="stat-label">In Wishlist</span>
                 </div>
             </div>
         </div>
+    </div>
 
         <!-- Three Column Layout -->
         <div class="profile-content">
-            <!-- Following Section -->
+            <!-- Collection Section -->
             <div class="profile-section">
-                <h2>Following</h2>
+                <h2>My Collection</h2>
                 <div class="profile-section-content">
-                    {% for following in following_users %}
-                    <div class="user-card">
-                        <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="User avatar">
-                        <div class="user-info">
-                            <h3>{{ following.username }}</h3>
-                            <p>Following since {{ following.date_followed }}</p>
-                        </div>
+                    {% for item in collection_items %}
+                    <div class="sneaker-card">
+                        <a href="/sneakerpage?sku={{ item[1] | urlencode }}" style="text-decoration: none; color: inherit;">
+                            <img src="{{ item[5] }}" alt="{{ item[2] }}" class="collection-image">
+                            <div class="sneaker-info">
+                                <h3>{{ item[3] }}</h3>
+                                <p>{{ item[2] }}</p>
+                                <p>${{ item[4] }}</p>
+                            </div>
+                        </a>
                     </div>
                     {% endfor %}
                 </div>
@@ -62,17 +72,20 @@
                 </div>
             </div>
 
-            <!-- Followers Section -->
+            <!-- Wishlist Section -->
             <div class="profile-section">
-                <h2>Followers</h2>
+                <h2>My Wishlist</h2>
                 <div class="profile-section-content">
-                    {% for follower in followers %}
-                    <div class="user-card">
-                        <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="User avatar">
-                        <div class="user-info">
-                            <h3>{{ follower.username }}</h3>
-                            <p>Following since {{ follower.date_followed }}</p>
-                        </div>
+                    {% for item in wishlist_items %}
+                    <div class="sneaker-card">
+                        <a href="/sneakerpage?sku={{ item[1] | urlencode }}" style="text-decoration: none; color: inherit;">
+                            <img src="{{ item[5] }}" alt="{{ item[2] }}" class="wishlist-image">
+                            <div class="sneaker-info">
+                                <h3>{{ item[3] }}</h3>
+                                <p>{{ item[2] }}</p>
+                                <p>${{ item[4] }}</p>
+                            </div>
+                        </a>
                     </div>
                     {% endfor %}
                 </div>

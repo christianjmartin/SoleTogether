@@ -9,7 +9,21 @@
     <script src="{{ url_for('static', filename='theme.js') }}"></script>
 </head>
 <body>
-    <h1>Community Discussion</h1>
+    <div class="top-of-menu">
+        <a href="/menu" style="text-decoration: none; color: var(--text-primary);">
+            <h2>SoleTogether</h2>
+        </a>
+        <p>Community Discussion</p>
+        <div class="top-right-controls">
+            <button id="theme-toggle" class="theme-btn">
+                <span id="theme-icon">🌙</span>
+            </button>
+            <a href="{{ url_for('view_profile', username=session.username) }}">
+                <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="profile icon" style="cursor: pointer;">
+            </a>
+        </div>
+    </div>
+    <!-- <h1>Community Discussion</h1> -->
     <div class="discussion-container">
         <div class="left-column">
             <!-- User Stats -->
@@ -45,9 +59,9 @@
                         <a href="{{ url_for('view_profile', username=entry[2]) }}" style="text-decoration: none; color: var(--text-primary);">
                             <strong>{{ entry[2] }} </strong>
                         </a>
-                        {% if entry[2] != current_user %}
+                        <!-- {% if entry[2] != current_user %}
                         <button class="btn" onclick="followUser('{{ entry[2] }}')">Follow</button>
-                        {% endif %}
+                        {% endif %} -->
                     </div>
                     <p>{{ entry[1] }}</p>
                     <div class="entry-footer">

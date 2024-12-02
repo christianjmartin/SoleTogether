@@ -79,6 +79,25 @@ def toggle_like(conn, dbCursor, client_id, entry_id):
     except Exception as e:
         print(f"Error toggling like: {e}")
         return False
+    
+
+def check_following(dbCursor, follower_username, following_username):
+    try:
+        # Check if already following
+        check_query = """
+            SELECT * FROM Follows 
+            WHERE FollowerUsername = ? AND FollowingUsername = ?
+        """
+        dbCursor.execute(check_query, (follower_username, following_username))
+        existing_follow = dbCursor.fetchone()
+
+        if existing_follow:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(f"Error checking following status: {e}")
+        return False
 
 def toggle_follow(conn, dbCursor, follower_username, following_username):
     """Toggle follow status for a user"""
@@ -327,3 +346,38 @@ def get_following(dbCursor, username):
     except Exception as e:
         print(f"Error fetching following: {e}")
         return []
+    
+
+
+def insert_brands(conn, dbCursor, username, brands):
+    try:
+        check = "SELECT * FROM UserBrands WHERE ClientUsername = ?"
+        dbCursor.execute(check, (username,))
+        result = dbCursor.fetchone()
+        if result != None:
+            reset = "DELETE FROM UserBrands WHERE ClientUsername = ?"
+            dbCursor.execute(reset, (username,))
+            conn.commit()
+            for brand in brands:
+                query = "INSERT INTO UserBrands (ClientUsername, brands) VALUES (?,?)"
+                dbCursor.execute(query, (username, brand))
+        else:   
+            for brand in brands:
+                query = "INSERT INTO UserBrands (ClientUsername, brands) VALUES (?,?)"
+                dbCursor.execute(query, (username, brand))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error adding to collection: {e}")
+        return False
+    
+def get_user_brands(dbCursor, username):
+    try:
+        query = "SELECT brands FROM UserBrands WHERE ClientUsername = ?"
+        dbCursor.execute(query, (username,))
+        result = dbCursor.fetchall()
+        brands = [row[0] for row in result] if result else []
+        return brands
+    except Exception as e:
+        print(f"Error adding to collection: {e}")
+        return False

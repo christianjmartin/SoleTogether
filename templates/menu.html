@@ -37,39 +37,25 @@
             <form action="/sneakerSearch" method="POST">
                 <button class="btn">Search Sneakers</button>
             </form>
-            <!-- <br>
-            <form action="/userSearch" method="POST">
-                <button class = "btn">Search Users</button>
-            </form> -->
         </div>
-        <div class="column releases-box">
-            <div class="releases-box-title">
-                <p>New Releases from: NIKE</p>
-            </div>
-            <div class="releases-box-section">
-                <b>Nike Calm Mule</b>
-                <p>Average Price: $60</p>
-                <img src="{{ url_for('static', filename='calm.jpeg') }}" alt="{{ shoe }}">
-            </div>
-            <div class="releases-box-section">     
-                <b>Nike Dunk Retro High SE</b>
-                <p>Average Price: $100</p>
-                <img src="{{ url_for('static', filename='grDunk.jpeg') }}" alt="{{ shoe }}">
-            </div>
-
-            <div class="releases-box-title">
-                <p class="spacing-10px">Popular Releases from: ADIDAS</p>
-            </div>
-            <div class="releases-box-section">
-                <b>Adidas Yeezy Boost 350 Turtle Dove</b>
-                <p>Average Price: $375</p>
-                <img src="{{ url_for('static', filename='dove.jpeg') }}" alt="{{ shoe }}">
-            </div>
-            <div class="releases-box-section">
-                <b>Adidas Samba Messi</b>
-                <p>Average Price: $110</p>
-                <img src="{{ url_for('static', filename='messi.jpeg') }}" alt="{{ shoe }}">
-            </div>
+        <div class="releases-box">
+            {% if top_four %}
+                <div class="releases-box-title">
+                    <p>Top Releases from {{ top_four[0].brand }}</p>
+                </div>
+                {% for sneaker in top_four %}
+                    <div class="releases-box-section">
+                        <a href="{{ url_for('sneaker_page', sku=sneaker.sku) }}" style="text-decoration: none; color: inherit;">
+                            <b>{{ sneaker.name }}</b>
+                            <p>Brand: {{ sneaker.brand }}</p>
+                            <p>Average Price: ${{ sneaker.resell_price or 'N/A' }}</p>
+                            <img src="{{ sneaker.img_url }}" alt="{{ sneaker.name }}">
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No releases found.</p>
+            {% endif %}
         </div>
     </div>
 </body>

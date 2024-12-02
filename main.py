@@ -3,6 +3,8 @@ import logic
 import sqlite3
 import os
 import requests
+import json
+import time
 from dataclasses import dataclass
 
 app = Flask(__name__)
@@ -41,6 +43,16 @@ def get_db():
         g.db = sqlite3.connect(db_path, check_same_thread=False)
     return g.db
 
+def fetch_top_items(brand):
+    api_url = f"http://localhost:5001/sneakers?query={brand}&limit=4"
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
+        return response.json() 
+    except requests.RequestException as e:
+        print(f"API request failed: {e}")
+        return []
+
 @app.teardown_appcontext
 def close_db(exception):
     db = g.pop('db', None)
@@ -61,7 +73,12 @@ def login():
         password = request.form.get('password')
         session['username'] = username
         if logic.login(dbCursor, username, password):
-            return render_template('menu.html')
+            # conn = get_db()
+            # dbCursor = conn.cursor()
+            username = session['username']
+            # user_brands = logic.get_user_brands(dbCursor, username)
+            return redirect(url_for('menu'))
+            # return render_template('menu.html')
         else:
             return jsonify(message='This client doesnt exist')
     else:
@@ -84,14 +101,91 @@ def signup():
 
 @app.route('/menu')
 def menu():
-    return render_template('menu.html')
+    conn = get_db()
+    dbCursor = conn.cursor()
+    username = session['username']
+    user_brands = logic.get_user_brands(dbCursor, username)
+
+    if user_brands:
+        # THE NUMBER IS HOW OFTEN IT CHANGES, NOW ITS EVERY 5 SECONDS FOR TESTING PURPOSES
+        index = int(time.time() // 5) % len(user_brands)  # Changes every 30 seconds
+        brand_to_display = user_brands[index]
+        with app.test_client() as client:
+            response = client.get(f"/sneaker_search_results?keyword={brand_to_display}&limit=25")
+            if response.status_code == 200:
+                top_four = response.get_json()[:4]
+                for i in top_four:
+                    print(i)
+                    print()
+            else:
+                print(f"Error: {response.get_json().get('error', 'Unknown error')}")
+                top_four = []
+    else:
+        top_four = []
+
+    processed_sneakers = []
+    for sneaker in top_four:
+        try:
+            average_price = 0
+            resell_prices = sneaker.get('lowestResellPrice')
+            if resell_prices:
+                price_values = resell_prices.values()
+                if price_values:
+                    average_price = round(sum(price_values) / len(price_values))
+                else:
+                    average_price = None
+            else:
+                average_price = sneaker.get('retailPrice')
+
+            # resell_links = sneaker.get('resellLinks', {})
+            # stockx_link = resell_links.get('stockX', None)
+            # goat_link = resell_links.get('goat', None)
+            # flightclub_link = resell_links.get('flightClub', None)
+
+            # Create a Sneaker object for each sneaker
+            sneaker_obj = Sneaker(
+                resell_price=average_price,
+                brand=sneaker.get('brand'),
+                name=sneaker.get('shoeName'),
+                price=None,
+                img_url=sneaker.get('thumbnail'),
+                sku=sneaker.get('styleID'),
+                release_date=None,
+                description=None,
+                stockx_link=None,
+                goat_link=None,
+                flightclub_link=None
+            )
+
+            processed_sneakers.append(sneaker_obj)
+
+        except Exception as e:
+            print(f"Error processing sneaker: {e}")
+            continue
+
+    conn.close()
+    
+    return render_template(
+        'menu.html',
+        top_four=processed_sneakers
+    )
+
 
 @app.route('/tutorial1', methods=['GET', 'POST'])
 def tutorial1():
     if request.method == 'POST':
-        brands = request.form.get('selected_brands')
-        print(brands)
-        return redirect(url_for('tutorial2'))
+        brands_json = request.form.get('selected_brands')
+        brands = json.loads(brands_json)
+        # for brand in brands:
+        #     print(brand)
+        conn = get_db()
+        dbCursor = conn.cursor()
+        username = session['username']
+        insert_brands = logic.insert_brands(conn, dbCursor, username, brands)
+        if insert_brands:
+            return redirect(url_for('tutorial2'))
+        else:
+            return jsonify(message='Error in saving your brands')
     else:
         return render_template('tutorial1.html')
 
@@ -112,6 +206,10 @@ def tutorial3():
 @app.route('/tutorial4', methods=['GET', 'POST'])
 def tutorial4():
     if request.method == 'POST':
+        # conn = get_db()
+        # dbCursor = conn.cursor()
+        # username = session['username']
+        # user_brands = logic.get_user_brands(dbCursor, username)
         return redirect(url_for('menu'))
     else:
         return render_template('tutorial4.html')
@@ -502,6 +600,8 @@ def view_profile(username):
     # Get wishlist items
     wishlist_items = logic.get_wishlist(dbCursor, username)
     wishlist_count = len(wishlist_items)
+
+    is_following = logic.check_following(dbCursor, viewer, username)
     
     return render_template('profile.html',
                          user={'username': username},
@@ -511,7 +611,8 @@ def view_profile(username):
                          wishlist_items=wishlist_items,
                          collection_count=collection_count,
                          wishlist_count=wishlist_count,
-                         viewer=viewer)
+                         viewer=viewer,
+                         is_following=is_following)
 
 @app.route('/save-theme', methods=['POST'])
 def save_theme():

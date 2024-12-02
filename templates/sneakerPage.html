@@ -8,13 +8,31 @@
     <script src="{{ url_for('static', filename='theme.js') }}"></script>
 </head>
 <body>
+    <div class="top-of-menu">
+        <a href="/menu" style="text-decoration: none; color: var(--text-primary);">
+            <h2>SoleTogether</h2>
+        </a>
+        <p></p>
+        <div class="top-right-controls">
+            <button id="theme-toggle" class="theme-btn">
+                <span id="theme-icon">🌙</span>
+            </button>
+            <a href="{{ url_for('view_profile', username=session.username) }}">
+                <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="profile icon" style="cursor: pointer;">
+            </a>
+        </div>
+    </div>
     <div class="sneaker-page-container">
         <div class="sneaker-info-and-links">
             <div class="sneaker-image-circle">
                 <img src="{{ sneaker.img_url }}" alt="{{ sneaker.name }}">
             </div>
             <div class="sneaker-details">
-                <h1>{{ sneaker.name }}</h1>
+                {% if sneaker.name|length > 65 %}
+                    <h2>{{ sneaker.name }}</h2>
+                {% else %}
+                    <h1>{{ sneaker.name }}</h1>
+                {% endif %}
                 <p>Brand: {{ sneaker.brand }}</p>
                 <p>Average Price: ${{ sneaker.resell_price }}</p>
                 <!-- add release date  -->

@@ -174,25 +174,29 @@ html {
 }
 
 .releases-box-section {
-    height: 225px;
+    min-height: max-content;
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
-    color: white;
+    color: black;
     border-radius: 10px;
     box-shadow: 0px 8px 16px 0px rgba(94, 94, 94, 0.2);
-    text-align: right;
-    color: black;
+    text-align: left; 
+    padding: 10px; 
 }
 
 .releases-box-section img {
-    width: 100%;
-    height: auto;
+    width: auto;
     max-height: 150px;
-    max-width: 300px;
+    /* max-width: 300px; */
     object-fit: cover;
     border-radius: 8px; 
-    margin-left: 2vw;
+    align-self: right;
+    right: 0;
+    margin: 0; 
+    margin-top: 10px;
+    margin-bottom: 0px;
+    /* transform: translateX(250px); */
 }
 
 .releases-box-section p{
@@ -573,12 +577,22 @@ html {
 }
 
 .profile-section {
-    background-color: var(--background-tertiary);  /* Instead of hardcoded #e6edf0 */
+    background-color: var(--background-secondary);  /* Instead of hardcoded #e6edf0 */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 8px 16px rgba(94, 94, 94, 0.2);
     border: 1px solid var(--border-color);
 }
+
+.profile-section .sneaker-card {
+    background-color: var(--background-primary); 
+    box-shadow: none;
+}
+
+.profile-section .sneaker-card:hover {
+    background-color: var(--background-tertiary); 
+}
+
 
 .profile-stats {
     display: flex;
@@ -591,7 +605,7 @@ html {
     background-color: var(--card-background);  /* Instead of hardcoded white */
     border-radius: 8px;
     padding: 15px;
-    max-height: 500px;
+    max-height: 45vh;
     overflow-y: auto;
     /* background-color: #f3f3f3; */
 }
@@ -736,6 +750,11 @@ body {
     background-color: var(--card-background);
 }
 
+.entry-header strong:hover {
+    color: #5b84ff;
+    text-decoration: underline;
+}
+
 .sneaker-card {
     background-color: var(--card-background);
     color: var(--text-primary);
@@ -750,7 +769,7 @@ body {
 }
 
 .profile-header {
-    background-color: var(--background-tertiary);
+    background-color: var(--background-secondary);
 }
 
 .user-card {
@@ -974,3 +993,7 @@ input::placeholder, textarea::placeholder {
 
 
 
+.flex-row {
+    display: flex;
+    gap: 10px;
+}

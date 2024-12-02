@@ -6,13 +6,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}"/>
     <title>{{ user.username }}'s Profile</title>
     <script src="{{ url_for('static', filename='theme.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 </head>
 <body>
     <div class="top-of-menu">
         <a href="/menu" style="text-decoration: none; color: var(--text-primary);">
             <h2>SoleTogether</h2>
         </a>
-        <p>Profile</p>
+        {% if user.username == viewer %}
+            <p>My Profile</p>
+        {% endif %}
         <div class="top-right-controls">
             <button id="theme-toggle" class="theme-btn">
                 <span id="theme-icon">🌙</span>
@@ -24,7 +27,18 @@
     </div>
     <div class="profile-header">
         <div class="profile-info">
-            <h1>{{ user.username }}</h1>
+            <div class="flex-row">
+                <h1>{{ user.username }}</h1>
+                {% if user.username != viewer %}
+                <button class="btn2" id="follow-btn" onclick="toggleFollow('{{ user.username }}')">
+                    {% if is_following %}
+                        Unfollow
+                    {% else %}
+                        Follow
+                    {% endif %}
+                </button>
+                {% endif %}
+            </div>
             <div class="profile-stats">
                 <div class="stat-item">
                     <span class="stat-number">{{ stats.followers }}</span>
@@ -50,7 +64,7 @@
         <div class="profile-content">
             <!-- Collection Section -->
             <div class="profile-section">
-                <h2>My Collection</h2>
+                <h2>Collection</h2>
                 <div class="profile-section-content">
                     {% for item in collection_items %}
                     <div class="sneaker-card">
@@ -69,7 +83,7 @@
 
             <!-- Posts Section -->
             <div class="profile-section">
-                <h2>My Posts</h2>
+                <h2>Posts</h2>
                 <div class="profile-section-content">
                     {% for post in posts %}
                     <div class="post-item">
@@ -91,7 +105,7 @@
 
             <!-- Wishlist Section -->
             <div class="profile-section">
-                <h2>My Wishlist</h2>
+                <h2>Wishlist</h2>
                 <div class="profile-section-content">
                     {% for item in wishlist_items %}
                     <div class="sneaker-card">
@@ -111,9 +125,9 @@
 
         <!-- Back Button -->
         <div class="menu-button-container">
-            <form action="/menu" method="GET">
+            <!-- <form action="/menu" method="GET">
                 <button class="btn">Back to Menu</button>
-            </form>
+            </form> -->
             {% if user.username == viewer %}
             <form action="/logout" method="POST">
                 <button class="btn">Logout</button>
@@ -122,4 +136,23 @@
         </div>
     </div>
 </body>
+<script>
+    async function toggleFollow(username) {
+        const followBtn = document.getElementById('follow-btn');
+        try {
+            if (followBtn.textContent === 'Follow') {
+                await axios.post(`/user/follow/${username}`);
+                followBtn.textContent = 'Unfollow';
+                window.location.reload();
+            } else {
+                await axios.post(`/user/follow/${username}`);
+                followBtn.textContent = 'Follow';
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error while toggling follow state.');
+        }
+    }
+</script>
 </html>

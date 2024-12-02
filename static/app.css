@@ -332,7 +332,6 @@ html {
 }
 
 
-
 .sneaker-discussions {
     margin-top: 10px;
     display: flex;
@@ -408,6 +407,8 @@ html {
 
 .menu-button-container {
     align-items: flex-start;
+    display: flex;
+    gap: 10px;
 }
 
 
@@ -497,6 +498,8 @@ html {
     width: 100%; /* Make it full width */
     max-width: none; /* Remove any max-width limitation */
 }
+
+
 .profile-picture {
     max-width: 45px !important;
     max-height: 45px !important;
@@ -567,16 +570,22 @@ html {
     grid-template-columns: repeat(3, 1fr);  /* Creates 3 equal columns */
     gap: 20px;  /* Space between columns */
     width: 100%;
-    padding: 20px;
 }
 
 .profile-section {
-    background-color: var(--background-secondary);  /* Instead of hardcoded #e6edf0 */
+    background-color: var(--background-tertiary);  /* Instead of hardcoded #e6edf0 */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 8px 16px rgba(94, 94, 94, 0.2);
     border: 1px solid var(--border-color);
 }
+
+.profile-stats {
+    display: flex;
+    gap: 100px;
+}
+
+
 
 .profile-section-content {
     background-color: var(--card-background);  /* Instead of hardcoded white */
@@ -584,6 +593,7 @@ html {
     padding: 15px;
     max-height: 500px;
     overflow-y: auto;
+    /* background-color: #f3f3f3; */
 }
 
 .profile-section h2 {
@@ -592,7 +602,7 @@ html {
     color: var(--text-primary);  /* Make sure headers use theme text color */
 }
 /* Specific profile picture override styles */
-.profile-container .profile-header .profile-picture {
+.profile-container .profile-header .profile-picture{
     width: 45px !important;
     height: 45px !important;
     border-radius: 50%;
@@ -608,6 +618,16 @@ html {
     gap: 10px;
     text-align: center;  /* Add this to center the text */
 }
+
+/* .post-item {
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.post-contnet .post-text .post-metadata{
+    margin-left: 10px;
+} */
 
 /* Dark Mode Styling */
 :root {
@@ -700,6 +720,10 @@ body {
     background-color: var(--background-secondary);
 }
 
+/* .profile-section-content {
+    background-color: var(--background-tertiary);
+} */
+
 .discussion-item {
     background-color: var(--card-background);
 }
@@ -717,12 +741,16 @@ body {
     color: var(--text-primary);
 }
 
+.profile-section-content .sneaker-card {
+    margin-bottom: 10px;
+}
+
 .sneaker-card:hover {
     background-color: var(--card-hover);
 }
 
 .profile-header {
-    background-color: var(--background-secondary);
+    background-color: var(--background-tertiary);
 }
 
 .user-card {
@@ -744,3 +772,205 @@ input::placeholder, textarea::placeholder {
 * {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/* tutorial sections  */
+.tutorial1-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    place-content: center;
+    gap: 30px;
+    background-color: var(--background-tertiary);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 8px 16px rgba(94, 94, 94, 0.2);
+    border: 1px solid #b6c0c4;
+    margin-bottom: 30px;
+    width: 70vw;
+    margin: 0 auto;
+    max-width: none;
+}
+/* 
+.tutorial1-bottom {
+    display: flex;
+    margin: 0 auto;
+    background-color: var(--background-tertiary);
+    align-items: flex-start;
+    gap: 10px;
+    box-shadow: 0px 8px 16px rgba(94, 94, 94, 0.2);
+    display: flex;
+    width: 70vw;
+}
+
+.tutorial1-bottom button {
+    margin: 10px;
+} */
+
+.brand-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; 
+    align-items: center; 
+    margin: 0 auto;
+}
+
+.brand {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    display:inline-table;
+    width: 150px;
+    text-align: center;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s, border-color 0.3s;
+    border: 1px solid rgb(158, 158, 158);
+}
+
+.brand.selected {
+    background-color: lightgreen;
+    border-color: #28a745;
+    color: #000;
+}
+
+.brand:hover {
+    background-color: #e8f5e9;
+}
+
+.danger {
+    background-color: rgb(253, 74, 74);
+}
+
+
+
+
+.tutorial2-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--background-tertiary);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px rgba(94, 94, 94, 0.2);
+    border: 1px solid #b6c0c4;
+    margin-bottom: 30px;
+    width: 70vw;
+    margin: 0 auto;
+    max-width: none;
+}
+
+.tutorial2-container h2 {
+    text-align: center;
+    margin-bottom: 10px; 
+}
+
+.tutorial2-container p {
+    background-color: #efefef;
+    border: 1px solid rgb(157, 157, 157);
+    border-radius: 15px;
+    padding: 5px;
+    width: 100%;
+    text-align: left;
+}
+
+.tutorial2-container form {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+
+
+.tutorial3-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--background-tertiary);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(94, 94, 94, 0.2);
+    border: 1px solid #b6c0c4;
+    margin-bottom: 30px;
+    width: 70vw;
+    margin: 0 auto;
+    max-width: none;
+}
+
+.tutorial3-img-container {
+    /* transform: translateY(50px); */
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    width: 70vw;
+    position: relative;
+    left: -1vw;
+}
+
+
+.center-button-tutorial {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.goat-image-larger {
+    border-radius: 50%;
+    height: 20vh;
+    width: auto;
+    gap: 20px;
+}
+
+.stockx-image-larger {
+    margin-left: 40px;
+    height: 20vh;
+    width: auto;
+    object-fit: cover;
+    gap: 20px;
+}
+
+.flightclub-image-larger {
+    height: 10vh;
+    margin-top: 35px;
+    width: auto;
+    object-fit: cover;
+    gap: 20px;
+}
+
+
+.tutorial4-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-tertiary);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(94, 94, 94, 0.2);
+    border: 1px solid #b6c0c4;
+    margin-bottom: 30px;
+    width: 70vw;
+    margin: 0 auto;
+    max-width: none;
+}
+
+
+
+
+

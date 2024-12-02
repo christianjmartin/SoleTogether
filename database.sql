@@ -69,3 +69,10 @@ CREATE TABLE IF NOT EXISTS Follows (
     FOREIGN KEY (FollowerUsername) REFERENCES Client(Username),
     FOREIGN KEY (FollowingUsername) REFERENCES Client(Username)
 );
+
+
+CREATE TABLE IF NOT EXISTS UserBrands (
+    ClientUsername TEXT,
+    brands TEXT,
+    FOREIGN KEY (ClientUsername) REFERENCES Client(Username)
+);

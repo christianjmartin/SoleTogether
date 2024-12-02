@@ -42,7 +42,9 @@
                 {% for entry in entries %}
                 <div class="general-discussion-entry entry" data-id="{{ entry[0] }}">
                     <div class="entry-header">
-                        <strong>{{ entry[2] }}</strong>
+                        <a href="{{ url_for('view_profile', username=entry[2]) }}" style="text-decoration: none; color: var(--text-primary);">
+                            <strong>{{ entry[2] }} </strong>
+                        </a>
                         {% if entry[2] != current_user %}
                         <button class="btn" onclick="followUser('{{ entry[2] }}')">Follow</button>
                         {% endif %}

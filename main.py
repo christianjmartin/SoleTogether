@@ -76,7 +76,7 @@ def signup():
         password = request.form.get('password')
         session['username'] = username
         if logic.signup(conn, dbCursor, username, password):
-            return render_template('menu.html')
+            return redirect(url_for('tutorial1'))
         else:
             return jsonify(message='You already have an account, or an internal error occured')
     else:
@@ -85,6 +85,42 @@ def signup():
 @app.route('/menu')
 def menu():
     return render_template('menu.html')
+
+@app.route('/tutorial1', methods=['GET', 'POST'])
+def tutorial1():
+    if request.method == 'POST':
+        brands = request.form.get('selected_brands')
+        print(brands)
+        return redirect(url_for('tutorial2'))
+    else:
+        return render_template('tutorial1.html')
+
+@app.route('/tutorial2', methods=['GET', 'POST'])
+def tutorial2():
+    if request.method == 'POST':
+        return redirect(url_for('tutorial3'))
+    else:
+        return render_template('tutorial2.html')
+    
+@app.route('/tutorial3', methods=['GET', 'POST'])
+def tutorial3():
+    if request.method == 'POST':
+        return redirect(url_for('tutorial4'))
+    else:
+        return render_template('tutorial3.html')
+    
+@app.route('/tutorial4', methods=['GET', 'POST'])
+def tutorial4():
+    if request.method == 'POST':
+        return redirect(url_for('menu'))
+    else:
+        return render_template('tutorial4.html')
+    
+
+
+
+
+
 
 @app.route('/sneakerSearch', methods=['POST'])
 def search_page():
@@ -453,6 +489,8 @@ def view_profile(username):
     
     # Get user stats (followers/following)
     user_stats = logic.get_user_stats(dbCursor, username)
+
+    viewer = session['username']
     
     # Get user posts
     posts = logic.get_user_posts(dbCursor, username)
@@ -472,7 +510,8 @@ def view_profile(username):
                          collection_items=collection_items,
                          wishlist_items=wishlist_items,
                          collection_count=collection_count,
-                         wishlist_count=wishlist_count)
+                         wishlist_count=wishlist_count,
+                         viewer=viewer)
 
 @app.route('/save-theme', methods=['POST'])
 def save_theme():
@@ -509,6 +548,24 @@ def save_theme():
     except Exception as e:
         print(f"Error saving theme preference: {e}")
         return jsonify({'error': 'Database error'}), 500
+    
+
+
+
+
+
+
+
+
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
+
+
 
 @app.route('/get-theme')
 def get_theme():

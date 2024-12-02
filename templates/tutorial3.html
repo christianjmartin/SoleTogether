@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="static/app.css"/>
+        <script src="{{ url_for('static', filename='theme.js') }}"></script>
+        <title>SoleTogether</title>
+    </head>
+<body>
+    <!-- <div class="top-of-menu">
+        <h2>Tutorial</h2>
+        <p></p>
+        <div class="top-right-controls">
+            <p></p>
+        </div>
+    </div> -->
+    <div class = "center-button-tutorial" >
+        <h2> How to buy sneakers</h2>
+    </div>
+    <br>
+    <div class = "tutorial3-container">
+        <p>Lots of online marketplaces have unauthentic sneakers 
+            floating around and they can be very hard to spot, 
+            so we encourage all of our users to be safe when shopping online.
+        </p>
+    </div>
+    <br>
+    <div class = "tutorial3-container">
+        <p>Safe second hand distributors
+             that allow you to purchase
+              directly from other sneaker 
+              heads at competitive pricing include
+             StockX, GOAT, and FlightClub
+        </p>
+    </div>
+    <br>
+    <div class = "tutorial3-img-container">
+        <img class="stockx-image-larger" src="{{ url_for('static', filename='stockxlogo.png') }}" alt="StockX link">
+        <img class="goat-image-larger" src="{{ url_for('static', filename='goatapp.jpg') }}" alt="GOAT link">
+        <img class="flightclub-image-larger" src="{{ url_for('static', filename='flightclub.png') }}" alt="Flight Club link">
+    </div>
+    <br>
+    <div class = "tutorial3-container">
+        <p>Please note that we
+             do not encourage you
+              to buy directly from other 
+              users of SoleTogether, as we cannot 
+              promise the integrity of all of our users.
+        </p>
+    </div>
+    <div class = "center-button-tutorial" >
+        <form method="POST">
+            <input type="hidden"/>
+            <button type="submit" class="btn">Next</button>
+        </form>
+    </div>

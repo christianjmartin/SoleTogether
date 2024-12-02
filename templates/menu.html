@@ -8,18 +8,18 @@
         <title>SoleTogether</title>
     </head>
 <body>
-        <div class="top-of-menu">
-            <h2>SoleTogether</h2>
-            <p>Main Menu</p>
-            <div class="top-right-controls">
-                <button id="theme-toggle" class="theme-btn">
-                    <span id="theme-icon">🌙</span>
-                </button>
-                <a href="{{ url_for('view_profile', username=session.username) }}">
-                    <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="profile icon" style="cursor: pointer;">
-                </a>
-            </div>
+    <div class="top-of-menu">
+        <h2>SoleTogether</h2>
+        <p>Main Menu</p>
+        <div class="top-right-controls">
+            <button id="theme-toggle" class="theme-btn">
+                <span id="theme-icon">🌙</span>
+            </button>
+            <a href="{{ url_for('view_profile', username=session.username) }}">
+                <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="profile icon" style="cursor: pointer;">
+            </a>
         </div>
+    </div>
     <div class="menu-container">
         <div class="left-column">
             <form action="/discussion" method="GET">

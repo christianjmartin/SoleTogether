@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="static/app.css"/>
+        <script src="{{ url_for('static', filename='theme.js') }}"></script>
+        <title>SoleTogether</title>
+    </head>
+<body>
+    <!-- <div class="top-of-menu">
+        <h2>Tutorial</h2>
+        <p></p>
+        <div class="top-right-controls">
+            <p></p>
+             <a href="{{ url_for('view_profile', username=session.username) }}">
+                <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="profile icon" style="cursor: pointer;">
+            </a> -->
+        <!-- </div>
+    </div> --> 
+    <div class = "center-button-tutorial" >
+        <h2> Common terms used in discussion </h2>
+    </div>
+    <br>
+    <div class = "tutorial2-container">
+        <p><strong>“Deadstock / DS”</strong> - The shoe is Brand New</p>
+        <p><strong>“DSWT”</strong> - Deadstock, “With Tags”</p>
+        <p><strong>“MINT”</strong> - The shoe is lightly worn and in perfect condition</p>
+        <p><strong>“Beaters”</strong> - A shoe that has been heavily worn and this visually shows</p>
+        <p><strong>“Grail”</strong> - A shoe that holds value to someone, usually they do not own it and are hoping to someday.</p>
+        <p><strong>“Brick”</strong> - A shoe that has no resale value and tends to sit on shelves in stores.</p>
+        <p><strong>“Retail”</strong> - The original price of the shoe</p>
+        <p><strong>“GR”</strong> - “General Release”, referring to a shoe that is produced in mass amounts and is usually not difficult to acquire for retail price.</p>
+        <p><strong>“OBO”</strong> - “Or best offer”</p>
+        <p><strong>“BIN”</strong> - “Buy it now”</p>
+        <p><strong>“Ask”</strong> - The asking price of a shoe, commonly used to refer to the “Buy Now” price on StockX</p>
+        <p><strong>“SKU”</strong> - The numbered identifier of a shoe, every one is different</p>
+        <p><strong>“Cop”</strong> - To acquire</p>
+       
+    </div>
+    <div class = "center-button-tutorial" >
+        <form method="POST">
+            <input type="hidden"/>
+            <button type="submit" class="btn">Next</button>
+        </form>
+    </div>

@@ -8,8 +8,21 @@
     <script src="{{ url_for('static', filename='theme.js') }}"></script>
 </head>
 <body>
+    <div class="top-of-menu">
+        <a href="/menu" style="text-decoration: none; color: var(--text-primary);">
+            <h2>SoleTogether</h2>
+        </a>
+        <p>Profile</p>
+        <div class="top-right-controls">
+            <button id="theme-toggle" class="theme-btn">
+                <span id="theme-icon">🌙</span>
+            </button>
+            <a href="{{ url_for('view_profile', username=session.username) }}">
+                <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="profile icon" style="cursor: pointer;">
+            </a>
+        </div>
+    </div>
     <div class="profile-header">
-        <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="Profile Picture">
         <div class="profile-info">
             <h1>{{ user.username }}</h1>
             <div class="profile-stats">
@@ -63,9 +76,13 @@
                         <div class="post-content">
                             <p class="post-text">{{ post.body }}</p>
                             <div class="post-metadata">
-                                <span class="post-date">{{ post.date }}</span>
-                                <span class="post-likes">{{ post.likes }} likes</span>
+                                {% if post.likes == 1 %}
+                                    <small class="post-likes">{{ post.likes }} like</small>
+                                {% else %}
+                                    <small class="post-likes">{{ post.likes }} likes</small>
+                                {% endif %}
                             </div>
+                            <br>
                         </div>
                     </div>
                     {% endfor %}
@@ -97,6 +114,11 @@
             <form action="/menu" method="GET">
                 <button class="btn">Back to Menu</button>
             </form>
+            {% if user.username == viewer %}
+            <form action="/logout" method="POST">
+                <button class="btn">Logout</button>
+            </form>
+            {% endif %}
         </div>
     </div>
 </body>

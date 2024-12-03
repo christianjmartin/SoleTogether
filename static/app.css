@@ -850,6 +850,7 @@ input::placeholder, textarea::placeholder {
     justify-content: center; 
     align-items: center; 
     margin: 0 auto;
+    color: black;
 }
 
 .brand {
@@ -865,6 +866,8 @@ input::placeholder, textarea::placeholder {
     transition: background-color 0.3s, border-color 0.3s;
     border: 1px solid rgb(158, 158, 158);
 }
+
+
 
 .brand.selected {
     background-color: lightgreen;
@@ -912,6 +915,7 @@ input::placeholder, textarea::placeholder {
     padding: 5px;
     width: 100%;
     text-align: left;
+    color: black;
 }
 
 .tutorial2-container form {

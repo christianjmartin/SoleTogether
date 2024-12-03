@@ -83,6 +83,10 @@ html {
     transform: translateX(-57px);
 }
 
+.top-of-menu h2:hover {
+    color: rgb(132, 182, 211);
+}
+
 .profile-icon {
     border-radius: 10px;
     height: 40px;
@@ -208,6 +212,9 @@ html {
     font-size: 1.5rem;
 }
 
+.releases-box-section:hover {
+    background-color: var(--background-tertiary);
+}
 .spacing-10px {
     margin-top: 10px;
 }
@@ -996,4 +1003,8 @@ input::placeholder, textarea::placeholder {
 .flex-row {
     display: flex;
     gap: 10px;
+}
+
+.back-menu-hover:hover {
+    color: var(--background-tertiary);
 }

@@ -63,12 +63,26 @@
     </script>
 </head>
 <body>
+    <div class="top-of-menu">
+        <a href="/menu" style="text-decoration: none; color: var(--text-primary);">
+            <h2>SoleTogether</h2>
+        </a>
+        <p></p>
+        <div class="top-right-controls">
+            <button id="theme-toggle" class="theme-btn">
+                <span id="theme-icon">🌙</span>
+            </button>
+            <a href="{{ url_for('view_profile', username=session.username) }}">
+                <img class="profile-icon" src="{{ url_for('static', filename='prof.jpeg') }}" alt="profile icon" style="cursor: pointer;">
+            </a>
+        </div>
+    </div>
     <div class="form-container">
         <h1>Search for Sneakers</h1>
         <input type="text" id="keyword" name="keyword" placeholder="Enter sneaker name or keyword" oninput="handleInput()" required>
-        <form action="/menu" method="GET">
+        <!-- <form action="/menu" method="GET">
             <button class="btn">Back to Menu</button>
-        </form>
+        </form> -->
     </div>
     <div id="results"></div>
 </body>

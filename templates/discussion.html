@@ -68,7 +68,11 @@
                         <button class="btn" onclick="toggleLike('{{entry[0]}}')">
                             Like ({{ entry[3] }})
                         </button>
-                        <span>{{ entry[4] }} followers</span>
+                        {% if entry[4] == 1 %}
+                            <span>{{ entry[4] }} follower</span>
+                        {% else %}
+                            <span>{{ entry[4] }} followers</span>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}

@@ -640,12 +640,16 @@ html {
     text-align: center;  /* Add this to center the text */
 }
 
-/* .post-item {
-    border: 2px solid var(--border-color);
-    border-radius: 5px;
-    margin-bottom: 10px;
+ .post-item {
+    /* border: 1px solid var(--border-color); */
+    border-radius: 10px;
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: var(--background-primary);
+    box-shadow: 0px 8px 16px 0px rgba(94, 94, 94, 0.2);
 }
 
+/*
 .post-contnet .post-text .post-metadata{
     margin-left: 10px;
 } */
@@ -768,7 +772,8 @@ body {
 }
 
 .profile-section-content .sneaker-card {
-    margin-bottom: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0px 8px 16px 0px rgba(94, 94, 94, 0.2);
 }
 
 .sneaker-card:hover {
